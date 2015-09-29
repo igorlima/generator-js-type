@@ -9,7 +9,7 @@
     "website": "http://github.com/igorlima"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/mocha/bin/mocha test/*_spec.js"
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,8 @@
   "dependencies": {
     "lodash": "^3.10.1",
     "yeoman-generator": "^0.20.3"
+  },
+  "devDependencies": {
+    "mocha": "~2.3.3"
   }
 }
