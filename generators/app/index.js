@@ -21,7 +21,7 @@ module.exports = generators.Base.extend({
     this.classname = _.camelCase(this.classname);
 
 
-    this.attributes = [];
+    this.attrs = [];
 
     // Next, add your custom code
     this.option('coffee'); // This method adds support for a `--coffee` flag
@@ -53,7 +53,7 @@ module.exports = generators.Base.extend({
   },
 
   _addAttribute: function (answers, arguments, done) {
-    this.attributes.push( answers );
+    this.attrs.push( answers );
     this.askForAttribute.apply( this, arguments );
     done();
   },
@@ -101,13 +101,13 @@ module.exports = generators.Base.extend({
   },
 
   _writing: function () {
-    // this.log( this.attributes );
+    // this.log( this.attrs );
     this.fs.copyTpl(
       this.templatePath('class.js'),
       this.destinationPath( this.classname + '.js' ),
       {
         classname: this.classname,
-        attributes: this.attributes
+        attributes: this.attrs
       }
     );
   }
