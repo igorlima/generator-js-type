@@ -22,7 +22,6 @@ module.exports = generators.Base.extend( {
 
   writing: function () {
     var done = this.async();
-    this.log('hello')
     fs.readFile( this.filepath, 'utf8', function ( err, data ) {
       if ( err ) throw err;
 
