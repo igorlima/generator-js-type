@@ -20,6 +20,16 @@ module.exports = generators.Base.extend( {
 
   },
 
+  _getPropertyType: function(property, isArray) {
+    var prop = isArray ? property.items : property;
+    return !prop.$ref ? prop.type : _.capitalize(
+      path.basename(
+        prop.$ref,
+        path.extname( prop.$ref )
+      )
+    );
+  },
+
   writing: function () {
     var done = this.async();
     fs.readFile( this.filepath, 'utf8', function ( err, data ) {
@@ -27,7 +37,8 @@ module.exports = generators.Base.extend( {
 
       var jsonSchema = JSON.parse( data );
       var ext = path.extname( this.filepath );
-      var filename = path.basename( this.filepath, ext );
+      var filename = _.capitalize( path.basename( this.filepath, ext ) );
+      var getPropertyType = this._getPropertyType;
 
       this.fs.copyTpl(
         this.templatePath('../../app/templates/class.js'),
@@ -35,9 +46,19 @@ module.exports = generators.Base.extend( {
         {
           classname: filename,
           attributes: _.map( jsonSchema.properties, function(property, propertyName) {
+            var array = property.type === 'array' && {
+              type: getPropertyType( property, true ),
+              toString: function() {
+                return 'Array<' + this.type + '>';
+              }
+            };
+            var type = !!array ? array.type : getPropertyType( property );
+
             return {
               name: propertyName,
-              type: property.type
+              isArray: !!array,
+              type: type,
+              toString: array ? array.toString() : type
             };
           } )
         }
