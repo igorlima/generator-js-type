@@ -1,6 +1,6 @@
 {
   "name": "generator-js-type",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "generator for js type",
   "main": "generators/app/index.js",
   "author": {
