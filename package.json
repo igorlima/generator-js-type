@@ -1,8 +1,8 @@
 {
   "name": "generator-js-type",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "generator for js type",
-  "main": "index.js",
+  "main": "generators/app/index.js",
   "author": {
     "name": "Igor Ribeiro Lima",
     "email": "lima.igorrribeiro@gmail.com",
