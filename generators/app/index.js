@@ -20,13 +20,10 @@ module.exports = generators.Base.extend({
     // And you can then access it later on this way; e.g. CamelCased
     this.classname = _.camelCase(this.classname);
 
-
     this.attrs = [];
 
     // Next, add your custom code
     this.option('coffee'); // This method adds support for a `--coffee` flag
-
-    this.spawnCommand('ls', ['-la']);
 
   },
 
