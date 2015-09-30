@@ -18,7 +18,6 @@
   "keywords": [
     "yeoman-generator"
   ],
-  "author": "lima.igorribeiro@gmail.com",
   "license": "ISC",
   "dependencies": {
     "lodash": "^3.10.1",
