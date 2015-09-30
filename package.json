@@ -20,6 +20,7 @@
   ],
   "license": "ISC",
   "dependencies": {
+    "fs-extra": "^0.24.0",
     "lodash": "^3.10.1",
     "yeoman-generator": "^0.20.3"
   },
