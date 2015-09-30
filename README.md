@@ -1,5 +1,6 @@
-# generator-js-type [![Build Status](https://travis-ci.org/igorlima/generator-js-type.png)](https://travis-ci.org/igorlima/generator-js-type) [![Node dependencies status](https://david-dm.org/igorlima/generator-js-type.png)](https://david-dm.org/igorlima/generator-js-type) [![npm version](https://badge.fury.io/js/generator-js-type.svg)](http://badge.fury.io/js/generator-js-type)
+generator-js-type [![Build Status](https://travis-ci.org/igorlima/generator-js-type.png)](https://travis-ci.org/igorlima/generator-js-type) [![Node dependencies status](https://david-dm.org/igorlima/generator-js-type.png)](https://david-dm.org/igorlima/generator-js-type) [![npm version](https://badge.fury.io/js/generator-js-type.svg)](http://badge.fury.io/js/generator-js-type)
 ==========================
+
 
 It's a [Yeoman generator](http://yeoman.io/authoring/index.html).
 
