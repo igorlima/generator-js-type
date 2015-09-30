@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/igorlima/generator-js-type.png)](https://travis-ci.org/igorlima/generator-js-type)
+[![Node dependencies status](https://david-dm.org/igorlima/generator-js-type.png)](https://david-dm.org/igorlima/generator-js-type)
 
 # generator-js-type
 
