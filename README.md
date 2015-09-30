@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/igorlima/generator-js-type.png)](https://travis-ci.org/igorlima/generator-js-type)
+
 # generator-js-type
 
 It's a [Yeoman generator](http://yeoman.io/authoring/index.html).
