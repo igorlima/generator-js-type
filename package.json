@@ -25,5 +25,5 @@
   },
   "scripts": {
     "test": "mocha test/*_spec.js"
-  },
+  }
 }
