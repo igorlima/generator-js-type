@@ -8,9 +8,7 @@
     "email": "lima.igorrribeiro@gmail.com",
     "website": "http://github.com/igorlima"
   },
-  "scripts": {
-    "test": "./node_modules/mocha/bin/mocha test/*_spec.js"
-  },
+  "license": "ISC",
   "repository": {
     "type": "git",
     "url": "https://github.com/igorlima/generator-js-type"
@@ -18,7 +16,6 @@
   "keywords": [
     "yeoman-generator"
   ],
-  "license": "ISC",
   "dependencies": {
     "fs-extra": "^0.24.0",
     "lodash": "^3.10.1",
@@ -27,5 +24,8 @@
   "devDependencies": {
     "yeoman-environment": "^1.2.7",
     "mocha": "~2.3.3"
+  },
+  "scripts": {
+    "test": "mocha test/*_spec.js"
   }
 }
