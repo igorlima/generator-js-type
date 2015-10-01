@@ -74,6 +74,6 @@ describe('Call generator without classname', function () {
       env.create(namespace, {})
     }, function (err) {
       return (err instanceof Error) && /Did not provide required argument/.test(err)
-    }, 'unexpected error')
+    }, 'not throwring any error')
   })
 })
