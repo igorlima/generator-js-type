@@ -22,10 +22,16 @@
     "yeoman-generator": "^0.20.3"
   },
   "devDependencies": {
+    "standard": "~5.3.1",
     "yeoman-environment": "^1.2.7",
     "mocha": "~2.3.3"
   },
+  "standard": {
+    "ignore": [
+      "generators/app/templates/**/*.js"
+    ]
+  },
   "scripts": {
-    "test": "mocha test/*_spec.js"
+    "test": "standard && mocha test/*_spec.js"
   }
 }
