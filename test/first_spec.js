@@ -3,6 +3,7 @@ var fs      = require('fs-extra');
 var helpers = require('yeoman-generator').test;
 var assert  = require('yeoman-generator').assert;
 var spawn   = require('child_process').spawn;
+var yeoman  = require('yeoman-environment');
 
 function runFlowType ( temporary_dir, callback ) {
   var flow = spawn( 'flow', ['check', __dirname + '/tmp' ] );
@@ -37,7 +38,7 @@ describe('Create TestClass with no attribute', function() {
         generator = this.generator;
         done();
       } );
-  });
+  } );
 
   it( 'should create a file named TestClass.js', function() {
     assert.file(['TestClass.js']);
@@ -56,6 +57,27 @@ describe('Create TestClass with no attribute', function() {
       assert.strictEqual( code, 0 );
       done();
     } );
+  } );
+
+} );
+
+describe('Call generator without classname', function() {
+  var env, generator, namespace;
+
+  before(function () {
+    env = yeoman.createEnv( [], {} );
+    generator = path.join( __dirname, '../generators/app' );
+    namespace = env.namespace( generator );
+  } );
+
+  it( 'should throw an error', function() {
+    assert.throws( function() {
+      env.register( generator );
+      env.create( namespace, {} );
+    }, function( err ) {
+      return (err instanceof Error) && /Did not provide required argument/.test(err);
+    }, "unexpected error" );
+
   } );
 
 } );

@@ -25,6 +25,7 @@
     "yeoman-generator": "^0.20.3"
   },
   "devDependencies": {
+    "yeoman-environment": "^1.2.7",
     "mocha": "~2.3.3"
   }
 }
