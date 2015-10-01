@@ -13,3 +13,4 @@ While the Readme.md is not done, please take a look at https://github.com/igorli
 
 - [Google JavaScript Style Guide](https://google.github.io/styleguide/javascriptguide.xml)
 - [JavaScript Standard Style](http://standardjs.com/)
+- [Testing guidelines](http://yeoman.io/contributing/testing-guidelines.html)

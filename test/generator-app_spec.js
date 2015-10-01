@@ -23,57 +23,55 @@ function runFlowType (temporary_dir, callback) {
   })
 }
 
-describe('Create TestClass with no attribute', function () {
-  var temporary_dir
+describe('generator app', function () {
+  describe('calling without classname', function () {
+    before(function () {
+      this.generator_environment = yeoman.createEnv([], {})
+      this.generator = path.join(__dirname, '../generators/app')
+      this.generator_namespace = this.generator_environment.namespace(this.generator)
+    })
 
-  before(function (done) {
-    helpers.run(path.join(__dirname, '../generators/app'))
-      .inTmpDir(function (dir) {
-        temporary_dir = dir
-      })
-      .withArguments(['TestClass'])         // Mock the arguments
-      .withPrompts({ newAttribute: false }) // Mock the prompt answers
-      .on('ready', function (generator) {
-        // This is called right before `generator.run()` is called
-      })
-      .on('end', done) // generator is available as this.generator in 'end' listener context
-  })
-
-  it('should create a file named TestClass.js', function () {
-    assert.file(['TestClass.js'])
-  })
-
-  it('should declare the class porperly', function () {
-    assert.fileContent('TestClass.js', 'class TestClass {')
-  })
-
-  it('should have a constructor in the class', function () {
-    assert.fileContent('TestClass.js', /constructor[(][\s]*[)] {/)
-  })
-
-  it('should terminate the FlowType with code signal as 0', function (done) {
-    runFlowType(temporary_dir, function (code) {
-      assert.strictEqual(code, 0)
-      done()
+    it('throw an error', function () {
+      assert.throws(function () {
+        this.generator_environment.register(this.generator)
+        this.generator_environment.create(this.generator_namespace, {})
+      }.bind(this), function (err) {
+        return (err instanceof Error) && /Did not provide required argument/.test(err)
+      }, 'not throwring any error')
     })
   })
-})
 
-describe('Call generator without classname', function () {
-  var env, generator, namespace
+  describe('a class with no attribute', function () {
+    before(function (done) {
+      helpers.run(path.join(__dirname, '../generators/app'))
+        .inTmpDir(function (dir) {
+          this.generator_temporary_dir = dir
+        }.bind(this))
+        .withArguments(['TestClass'])         // Mock the arguments
+        .withPrompts({ newAttribute: false }) // Mock the prompt answers
+        .on('ready', function (generator) {
+          // This is called right before `generator.run()` is called
+        })
+        .on('end', done) // generator is available as this.generator in 'end' listener context
+    })
 
-  before(function () {
-    env = yeoman.createEnv([], {})
-    generator = path.join(__dirname, '../generators/app')
-    namespace = env.namespace(generator)
-  })
+    it('create a js file', function () {
+      assert.file(['TestClass.js'])
+    })
 
-  it('should throw an error', function () {
-    assert.throws(function () {
-      env.register(generator)
-      env.create(namespace, {})
-    }, function (err) {
-      return (err instanceof Error) && /Did not provide required argument/.test(err)
-    }, 'not throwring any error')
+    it('have a class definition in the file', function () {
+      assert.fileContent('TestClass.js', 'class TestClass {')
+    })
+
+    it('have a constructor definition in the class', function () {
+      assert.fileContent('TestClass.js', /constructor[(][\s]*[)] {/)
+    })
+
+    it('can be validated via FlowType', function (done) {
+      runFlowType(this.generator_temporary_dir, function (code) {
+        assert.strictEqual(code, 0)
+        done()
+      })
+    })
   })
 })
