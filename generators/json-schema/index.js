@@ -19,7 +19,7 @@ module.exports = generators.Base.extend({
     this.option('coffee') // This method adds support for a `--coffee` flag
   },
 
-  _getPropertyType: function (property, isArray) {
+  _getObjectName: function (property, isArray) {
     var prop = isArray ? property.items : property
     return !prop.$ref ? prop.type : _.capitalize(
       path.basename(
@@ -37,7 +37,7 @@ module.exports = generators.Base.extend({
       var jsonSchema = JSON.parse(data)
       var ext = path.extname(this.filepath)
       var filename = _.capitalize(path.basename(this.filepath, ext))
-      var getPropertyType = this._getPropertyType
+      var getObjectName = this._getObjectName
 
       this.fs.copyTpl(
         this.templatePath('../../app/templates/class.js'),
@@ -46,18 +46,18 @@ module.exports = generators.Base.extend({
           classname: filename,
           attributes: _.map(jsonSchema.properties, function (property, propertyName) {
             var array = property.type === 'array' && {
-              type: getPropertyType(property, true),
-              toString: function () {
-                return 'Array<' + this.type + '>'
+              objectName: getObjectName(property, true),
+              type: function () {
+                return 'Array<' + this.objectName + '>'
               }
             }
-            var type = array ? array.type : getPropertyType(property)
+            var objectName = array ? array.objectName : getObjectName(property)
 
             return {
               name: propertyName,
               isArray: !!array,
-              type: type,
-              toString: array ? array.toString() : type
+              objectName: objectName,
+              type: array ? array.type() : objectName
             }
           })
         }
