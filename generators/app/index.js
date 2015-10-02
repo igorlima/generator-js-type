@@ -103,8 +103,9 @@ module.exports = yeomanGenerator.Base.extend({
    * gets executed.
    *
    * @see Build Your Own Yeoman Generator http://goo.gl/0wjB8g
+   * @public
    */
-  askForAttribute: function () {
+  promptForUserInput: function () {
     this._promptAttribute(arguments, this.async())
   },
 
@@ -116,7 +117,7 @@ module.exports = yeomanGenerator.Base.extend({
    *
    * @param {Array.<>} args A list of arguments
    * @param {Function} done A callback returned by `this.async()` in
-   *                        {@code this.askForAttribute}. This callback should
+   *                        {@code this.promptForUserInput}. This callback should
    *                        be called manually after finishing the interactive
    *                        command line with the user
    * @see http://yeoman.io/authoring/user-interactions.html
@@ -144,7 +145,7 @@ module.exports = yeomanGenerator.Base.extend({
    *
    * @param {Array.<>} args A list of arguments
    * @param {Function} done A callback returned by `this.async()` in
-   *                        {@code this.askForAttribute}. This callback should
+   *                        {@code this.promptForUserInput}. This callback should
    *                        be called manually after finishing the interactive
    *                        command line with the user
    * @see http://yeoman.io/authoring/user-interactions.html
@@ -168,7 +169,7 @@ module.exports = yeomanGenerator.Base.extend({
    * @param {object} attributeNameAnswers
    * @param {Array.<>} args A list of arguments
    * @param {Function} done A callback returned by `this.async()` in
-   *                        {@code this.askForAttribute}. This callback should
+   *                        {@code this.promptForUserInput}. This callback should
    *                        be called manually after finishing the interactive
    *                        command line with the user
    * @see http://yeoman.io/authoring/user-interactions.html
@@ -221,7 +222,7 @@ module.exports = yeomanGenerator.Base.extend({
    * @param {object} answers
    * @param {Array.<>} args A list of arguments
    * @param {Function} done A callback returned by `this.async()` in
-   *                        {@code this.askForAttribute}. This callback should
+   *                        {@code this.promptForUserInput}. This callback should
    *                        be called manually after finishing the interactive
    *                        command line with the user
    * @private

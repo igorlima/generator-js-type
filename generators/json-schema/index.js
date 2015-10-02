@@ -68,6 +68,7 @@ module.exports = yeomanGenerator.Base.extend({
    * @see mem-fs documentation https://github.com/sboudrias/mem-fs
    * @see mem-fs-edito documentation https://github.com/sboudrias/mem-fs-editor
    * @see Template format http://ejs.co/
+   * @public
    */
   writing: function () {
     var done = this.async()
