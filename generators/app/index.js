@@ -189,7 +189,7 @@ module.exports = yeomanGenerator.Base.extend({
         return
       }
 
-      this._promptAttributeObjectName(answers, function () {
+      this._promptAttributeClassName(answers, function () {
         this._addAttribute(answers, args, done)
       }.bind(this))
     }.bind(this))
@@ -202,7 +202,7 @@ module.exports = yeomanGenerator.Base.extend({
    * @see Inquirer documentation https://github.com/SBoudrias/Inquirer.js
    * @private
    */
-  _promptAttributeObjectName: function (objectAnswer, callback) {
+  _promptAttributeClassName: function (objectAnswer, callback) {
     this.prompt({
       type: 'input',
       name: 'attributeClassName' + this.attrs.length,
