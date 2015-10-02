@@ -2,7 +2,8 @@ var yeomanGenerator = require('yeoman-generator')
 var _ = require('lodash')
 
 /**
- * To override the yeoman generator constructor, pass a constructor function to `extend()` like so:
+ * To override the yeoman generator constructor, pass a constructor function to
+ * `extend()` like so:
  *
  * @see http://yeoman.io/authoring/index.html
  */
@@ -11,9 +12,8 @@ module.exports = yeomanGenerator.Base.extend({
   /**
    * Helper and private methods
    *
-   * The prototype methods are considered as action,
-   * you may wonder how to define helper or private methods
-   * that won't be called automatically.
+   * The prototype methods are considered as action, you may wonder how to
+   * define helper or private methods that won't be called automatically.
    * There's three different methods to achieve this.
    * <ul>
    * <li>Prefix method name by an underscore (e.g. `_method`)
@@ -22,26 +22,26 @@ module.exports = yeomanGenerator.Base.extend({
    * </ul>
    *
    * @see http://yeoman.io/authoring/running-context.html
+   * @private
    */
-  _method: function () {
+  _exampleForPrivateMethod: function () {
     this.log('won\'t be called automatically')
     this.log('Cause method name is prefixed by an underscore (e.g. _method).')
-  },
 
-  /**
-   * Destination context
-   *
-   * The first context is the destination context.
-   * The destination is the folder in which Yeoman will be scaffolding a new application.
-   * It is the user project folder, it is where it'll write most of the scaffolding.
-   * The template context is defined as `./templates/` by default.
-   * You can overwrite this default by using `generator.sourceRoot('new/template/path')`.
-   * You can get the path value using `generator.sourceRoot()`
-   * or by joining a path using `generator.templatePath('app/index.js')`
-   *
-   * @see http://yeoman.io/authoring/file-system.html
-   */
-  _paths: function () {
+    /**
+     * Destination context
+     *
+     * The first context is the destination context.
+     * The destination is the folder in which Yeoman will be scaffolding a new
+     * application. It is the user project folder, it is where it'll write most
+     * of the scaffolding. The template context is defined as `./templates/` by
+     * default. You can overwrite this default by using
+     * `generator.sourceRoot('new/template/path')`. You can get the path value
+     * using `generator.sourceRoot()` or by joining a path using
+     * `generator.templatePath('app/index.js')`
+     *
+     * @see http://yeoman.io/authoring/file-system.html
+     */
     this.log(this.destinationRoot())
     this.log(this.destinationPath(this.classname + '.js'))
     this.log(this.sourceRoot())
@@ -53,12 +53,14 @@ module.exports = yeomanGenerator.Base.extend({
    * `st` is used with numbers ending in 1 (e.g. 1st, pronounced first)
    * `nd` is used with numbers ending in 2 (e.g. 92nd, pronounced ninety-second)
    * `rd` is used with numbers ending in 3 (e.g. 33rd, pronounced thirty-third)
-   * As an exception to the above rules, all the "teen" numbers ending with 11, 12 or 13 use -th
-   * (e.g. 11th, pronounced eleventh, 112th, pronounced one hundred [and] twelfth)
+   * As an exception to the above rules, all the "teen" numbers ending with 11,
+   * 12 or 13 use -th (e.g. 11th, pronounced eleventh, 112th, pronounced one
+   * hundred [and] twelfth)
    * `th` is used for all other numbers (e.g. 9th, pronounced ninth).
    *
    * @see Gist: https://gist.github.com/jlbruno/1535691
    * @see Rules: https://en.wikipedia.org/wiki/Ordinal_indicator#English
+   * @private
   */
   _getOrdinal: function (number) {
     var suffix = ['th', 'st', 'nd', 'rd']
@@ -69,37 +71,38 @@ module.exports = yeomanGenerator.Base.extend({
   /**
    * Overwriting the constructor
    *
-   * Some generator methods can only be called inside the `constructor` function.
-   * These special methods may do things like set up important state controls
-   * and may not function outside of the constructor.
+   * Some generator methods can only be called inside the `constructor`
+   * function. These special methods may do things like set up important state
+   * controls and may not function outside of the constructor.
    *
    * @see http://yeoman.io/authoring/index.html
    * @constrcutor
    */
   constructor: function () {
-    // Calling the super constructor is important so the generator is correctly set up
+    // Calling the super constructor is important
+    // so the generator is correctly set up
     yeomanGenerator.Base.apply(this, arguments)
-
     // This makes `classname` a required argument.
-    this.argument('classname', { type: String, required: true, desc: 'Class name' })
+    this.argument('classname', {
+      type: String,
+      required: true,
+      desc: 'Class name'
+    })
     // And then access it later on this way; e.g. CamelCased
     this.classname = _.camelCase(this.classname)
-
     // @{code this.attrs} stores will answers from user interactions
     this.attrs = []
-
     // Next, add your custom code
     this.option('coffee') // This method adds support for a `--coffee` flag
   },
 
   /**
-   * Basically, behind the scene Yeoman always call a callback.
-   * This will call `this.async()` to keep a reference variable and return the callback.
+   * Basically, behind the scene Yeoman always call a callback. This will call
+   * `this.async()` to keep a reference variable and return the callback.
+   * Then Yeoman will wait to go on to the next function until that callback
+   * gets executed.
    *
-   * Call the `async` method return a callback,
-   * then Yeoman will wait to go on to the next function until that callback gets executed.
-   *
-   * @see Build Your Own Yeoman Generator http://code.tutsplus.com/tutorials/build-your-own-yeoman-generator--cms-20040
+   * @see Build Your Own Yeoman Generator http://goo.gl/0wjB8g
    */
   askForAttribute: function () {
     this._promptAttribute(arguments, this.async())
@@ -112,11 +115,13 @@ module.exports = yeomanGenerator.Base.extend({
    * Refer to its API for a list of available prompt options.
    *
    * @param {Array.<>} args A list of arguments
-   * @param {Function} done A callback returned by `this.async()` in {@code this.askForAttribute}.
-   *                        This callback should be called manually after
-   *                        finishing the interactive command line with the user
+   * @param {Function} done A callback returned by `this.async()` in
+   *                        {@code this.askForAttribute}. This callback should
+   *                        be called manually after finishing the interactive
+   *                        command line with the user
    * @see http://yeoman.io/authoring/user-interactions.html
    * @see Inquirer documentation https://github.com/SBoudrias/Inquirer.js
+   * @private
    */
   _promptAttribute: function (args, done) {
     var ordinalNumber = this._getOrdinal(this.attrs.length + 1)
@@ -138,11 +143,13 @@ module.exports = yeomanGenerator.Base.extend({
   /**
    *
    * @param {Array.<>} args A list of arguments
-   * @param {Function} done A callback returned by `this.async()` in {@code this.askForAttribute}.
-   *                        This callback should be called manually after
-   *                        finishing the interactive command line with the user
+   * @param {Function} done A callback returned by `this.async()` in
+   *                        {@code this.askForAttribute}. This callback should
+   *                        be called manually after finishing the interactive
+   *                        command line with the user
    * @see http://yeoman.io/authoring/user-interactions.html
    * @see Inquirer documentation https://github.com/SBoudrias/Inquirer.js
+   * @private
    */
   _promptAttributeName: function (args, done) {
     this.prompt({
@@ -160,11 +167,13 @@ module.exports = yeomanGenerator.Base.extend({
   /**
    * @param {object} attributeNameAnswers
    * @param {Array.<>} args A list of arguments
-   * @param {Function} done A callback returned by `this.async()` in {@code this.askForAttribute}.
-   *                        This callback should be called manually after
-   *                        finishing the interactive command line with the user
+   * @param {Function} done A callback returned by `this.async()` in
+   *                        {@code this.askForAttribute}. This callback should
+   *                        be called manually after finishing the interactive
+   *                        command line with the user
    * @see http://yeoman.io/authoring/user-interactions.html
    * @see Inquirer documentation https://github.com/SBoudrias/Inquirer.js
+   * @private
    */
   _promptAttributeType: function (attributeNameAnswers, args, done) {
     this.prompt({
@@ -190,6 +199,7 @@ module.exports = yeomanGenerator.Base.extend({
    * @param {Function} callback
    * @see http://yeoman.io/authoring/user-interactions.html
    * @see Inquirer documentation https://github.com/SBoudrias/Inquirer.js
+   * @private
    */
   _promptAttributeObjectName: function (objectAnswer, callback) {
     this.prompt({
@@ -201,7 +211,8 @@ module.exports = yeomanGenerator.Base.extend({
       }
     }, function (answers) {
       objectAnswer.isObject = true
-      objectAnswer['attributeType' + this.attrs.length] = answers['attributeClassName' + this.attrs.length]
+      objectAnswer['attributeType' + this.attrs.length] =
+        answers['attributeClassName' + this.attrs.length]
       callback()
     }.bind(this))
   },
@@ -209,9 +220,11 @@ module.exports = yeomanGenerator.Base.extend({
   /**
    * @param {object} answers
    * @param {Array.<>} args A list of arguments
-   * @param {Function} done A callback returned by `this.async()` in {@code this.askForAttribute}.
-   *                        This callback should be called manually after
-   *                        finishing the interactive command line with the user
+   * @param {Function} done A callback returned by `this.async()` in
+   *                        {@code this.askForAttribute}. This callback should
+   *                        be called manually after finishing the interactive
+   *                        command line with the user
+   * @private
    */
   _addAttribute: function (answers, args, done) {
     this.attrs.push({
@@ -230,14 +243,15 @@ module.exports = yeomanGenerator.Base.extend({
    * This process requires that the user validate every file write that
    * overwrites content to its file.
    *
-   * As asynchronous APIs are harder to use, Yeoman provide a synchronous file-system API
-   * where every file gets written to an in-memory file system
+   * As asynchronous APIs are harder to use, Yeoman provide a synchronous
+   * file-system API where every file gets written to an in-memory file system
    * and are only written to disk once when Yeoman is done running.
    *
    * @see http://yeoman.io/authoring/file-system.html
    * @see mem-fs documentation https://github.com/sboudrias/mem-fs
    * @see mem-fs-edito documentation https://github.com/sboudrias/mem-fs-editor
    * @see Template format http://ejs.co/
+   * @private
    */
   _writing: function () {
     /**
@@ -245,8 +259,8 @@ module.exports = yeomanGenerator.Base.extend({
      * which is an instance of `mem-fs editor`.
      * Make sure to check the module documentation for all available methods.
      *
-     * Use the `copyTpl` method to copy the file while processing the content as a template.
-     * `copyTpl` is using ejs template syntax.
+     * Use the `copyTpl` method to copy the file while processing the content
+     *  as a template. `copyTpl` is using ejs template syntax.
      */
     this.fs.copyTpl(
       this.templatePath('class.js'),
