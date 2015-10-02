@@ -43,7 +43,7 @@ module.exports = yeomanGenerator.Base.extend({
      * @see http://yeoman.io/authoring/file-system.html
      */
     this.log(this.destinationRoot())
-    this.log(this.destinationPath(this.classname + '.js'))
+    this.log(this.destinationPath(`${this.classname}.js`))
     this.log(this.sourceRoot())
     this.log(this.templatePath('index.js'))
   },
@@ -128,11 +128,11 @@ module.exports = yeomanGenerator.Base.extend({
     var ordinalNumber = this._getOrdinal(this.attrs.length + 1)
     this.prompt({
       type: 'confirm',
-      name: 'addAttribute' + this.attrs.length,
-      message: 'Add ' + ordinalNumber + ' attribute?',
+      name: `addAttribute${this.attrs.length}`,
+      message: `Add ${ordinalNumber} attribute?`,
       default: true
     }, function (answers) {
-      if (answers['addAttribute' + this.attrs.length]) {
+      if (answers[`addAttribute${this.attrs.length}`]) {
         this._promptAttributeName(arguments, done)
       } else {
         this._writing.apply(this, arguments)
@@ -155,7 +155,7 @@ module.exports = yeomanGenerator.Base.extend({
   _promptAttributeName: function (args, done) {
     this.prompt({
       type: 'input',
-      name: 'attributeName' + this.attrs.length,
+      name: `attributeName${this.attrs.length}`,
       message: 'Attribute name',
       validate: function (input) {
         return input.length > 0
@@ -179,12 +179,12 @@ module.exports = yeomanGenerator.Base.extend({
   _promptAttributeType: function (attributeNameAnswers, args, done) {
     this.prompt({
       type: 'list',
-      name: 'attributeType' + this.attrs.length,
+      name: `attributeType${this.attrs.length}`,
       message: 'Which type',
       choices: [ 'string', 'number', 'object' ]
     }, function (answers) {
       _.extend(answers, attributeNameAnswers)
-      if (answers['attributeType' + this.attrs.length] !== 'object') {
+      if (answers[`attributeType${this.attrs.length}`] !== 'object') {
         this._addAttribute(answers, args, done)
         return
       }
@@ -205,15 +205,15 @@ module.exports = yeomanGenerator.Base.extend({
   _promptAttributeClassName: function (objectAnswer, callback) {
     this.prompt({
       type: 'input',
-      name: 'attributeClassName' + this.attrs.length,
+      name: `attributeClassName${this.attrs.length}`,
       message: 'Class name',
       validate: function (input) {
         return input.length > 0
       }
     }, function (answers) {
       objectAnswer.isObject = true
-      objectAnswer['attributeType' + this.attrs.length] =
-        answers['attributeClassName' + this.attrs.length]
+      objectAnswer[`attributeType${this.attrs.length}`] =
+        answers[`attributeClassName${this.attrs.length}`]
       callback()
     }.bind(this))
   },
@@ -229,10 +229,10 @@ module.exports = yeomanGenerator.Base.extend({
    */
   _addAttribute: function (answers, args, done) {
     this.attrs.push({
-      name: answers['attributeName' + this.attrs.length],
-      type: answers['attributeType' + this.attrs.length],
+      name: answers[`attributeName${this.attrs.length}`],
+      type: answers[`attributeType${this.attrs.length}`],
       isObject: answers.isObject,
-      objectName: answers['attributeType' + this.attrs.length]
+      objectName: answers[`attributeType${this.attrs.length}`]
     })
     this._promptAttribute(args, done)
   },
@@ -265,7 +265,7 @@ module.exports = yeomanGenerator.Base.extend({
      */
     this.fs.copyTpl(
       this.templatePath('class.js'),
-      this.destinationPath(this.classname + '.js'),
+      this.destinationPath(`${this.classname}.js`),
       {
         classname: this.classname,
         attributes: this.attrs

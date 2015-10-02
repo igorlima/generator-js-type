@@ -15,3 +15,4 @@ While the Readme.md is not done, please take a look at https://github.com/igorli
 - [@use JSDoc](http://usejsdoc.org/)
 - [JavaScript Standard Style](http://standardjs.com/)
 - [Testing guidelines](http://yeoman.io/contributing/testing-guidelines.html)
+- [ECMAScript 6](https://github.com/lukehoban/es6features)

@@ -82,7 +82,7 @@ module.exports = yeomanGenerator.Base.extend({
 
       this.fs.copyTpl(
         this.templatePath('../../app/templates/class.js'),
-        this.destinationPath(filename + '.js'),
+        this.destinationPath(`${filename}.js`),
         {
           classname: filename,
           attributes: _.map(jsonSchema.properties,
@@ -90,7 +90,7 @@ module.exports = yeomanGenerator.Base.extend({
               var array = property.type === 'array' && {
                 objectName: getObjectName(property, true),
                 type: function () {
-                  return 'Array<' + this.objectName + '>'
+                  return `Array<${this.objectName}>`
                 }
               }
               var objectName = array ? array.objectName : getObjectName(property)
