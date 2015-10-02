@@ -4,7 +4,7 @@
   "description": "A canonical song",
   "properties": {
     "id": {
-      "type": "integer"
+      "type": "number"
     },
     "title": {
       "type": "string"

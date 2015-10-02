@@ -1,31 +1,12 @@
 /* global describe, it, before */
 
 var path = require('path')
-var fs = require('fs-extra')
 var helpers = require('yeoman-generator').test
 var assert = require('yeoman-generator').assert
-var spawn = require('child_process').spawn
 var yeoman = require('yeoman-environment')
 var async = require('async')
-
-var runFlowType = function (temporary_dir, callback) {
-  var flow = spawn('flow', [ 'check', __dirname + '/tmp' ])
-  var temporary_dirs = typeof temporary_dir === 'string' ? [temporary_dir] : temporary_dir
-
-  fs.removeSync(path.join(__dirname, 'tmp/*.js'))
-  temporary_dirs.forEach(function (dir) {
-    fs.copySync(dir, path.join(__dirname, 'tmp'))
-  })
-
-  // https://nodejs.org/api/child_process.html
-  flow.stderr.on('data', function (data) {
-    console.error('flow stderr: ' + data) // Log error in CI environment if needed
-  })
-
-  flow.on('close', function (code) {
-    callback(code)
-  })
-}
+var runFlowType = require('./helpers').runFlowType
+var createEmptyClass = require('./helpers').createEmptyClass
 
 describe('generator app', function () {
   describe('calling without classname', function () {
@@ -73,6 +54,7 @@ describe('generator app', function () {
 
     it('need to be validated via FlowType', function (done) {
       runFlowType(this.generator_temporary_dir, function (code) {
+        assert.file(path.join(__dirname, 'tmp/TestClass.js'))
         assert.strictEqual(code, 0)
         done()
       })
@@ -112,6 +94,7 @@ describe('generator app', function () {
 
     it('need to be validated by FlowType', function (done) {
       runFlowType(this.generator_temporary_dir, function (code) {
+        assert.file(path.join(__dirname, 'tmp/Song.js'))
         assert.strictEqual(code, 0)
         done()
       })
@@ -119,15 +102,6 @@ describe('generator app', function () {
   })
 
   describe('a class importing other classes', function () {
-    var createEmptyClass = function (classname, generator_temporary_dirs, callback) {
-      helpers.run(path.join(__dirname, '../generators/app'))
-        .inTmpDir(function (dir) {
-          generator_temporary_dirs.push(dir)
-        })
-        .withArguments([classname])
-        .withPrompts({ addAttribute0: false })
-        .on('end', callback)
-    }
     before(function (done) {
       this.generator_temporary_dirs = []
       async.waterfall([
@@ -164,6 +138,9 @@ describe('generator app', function () {
 
     it('need to be validated by FlowType', function (done) {
       runFlowType(this.generator_temporary_dirs, function (code) {
+        assert.file(path.join(__dirname, 'tmp/Track.js'))
+        assert.file(path.join(__dirname, 'tmp/Artirst.js'))
+        assert.file(path.join(__dirname, 'tmp/Song.js'))
         assert.strictEqual(code, 0)
         done()
       })
