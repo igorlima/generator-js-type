@@ -44,7 +44,7 @@ module.exports = yeomanGenerator.Base.extend({
    * @param {boolean} isArray True if the property argument is an array
    * @private
    */
-  _getObjectName: function (property, isArray) {
+  _getObjectName: (property, isArray) => {
     var prop = isArray ? property.items : property
     return !prop.$ref ? prop.type : _.capitalize(
       path.basename(
@@ -72,7 +72,7 @@ module.exports = yeomanGenerator.Base.extend({
    */
   writing: function () {
     var done = this.async()
-    fs.readFile(this.filepath, 'utf8', function (err, data) {
+    fs.readFile(this.filepath, 'utf8', (err, data) => {
       if (err) throw err
 
       var jsonSchema = JSON.parse(data)
@@ -86,11 +86,11 @@ module.exports = yeomanGenerator.Base.extend({
         {
           classname: filename,
           attributes: _.map(jsonSchema.properties,
-            function (property, propertyName) {
+            (property, propertyName) => {
               var array = property.type === 'array' && {
                 objectName: getObjectName(property, true),
-                type: function () {
-                  return `Array<${this.objectName}>`
+                type: () => {
+                  return `Array<${objectName}>`
                 }
               }
               var objectName = array ? array.objectName : getObjectName(property)
@@ -106,7 +106,7 @@ module.exports = yeomanGenerator.Base.extend({
       )
 
       done()
-    }.bind(this))
+    })
   }
 
 })

@@ -24,7 +24,7 @@ module.exports = yeomanGenerator.Base.extend({
    * @see http://yeoman.io/authoring/running-context.html
    * @private
    */
-  _exampleForPrivateMethod: function () {
+  _exampleForPrivateMethod: () => {
     this.log('won\'t be called automatically')
     this.log('Cause method name is prefixed by an underscore (e.g. _method).')
 
@@ -62,7 +62,7 @@ module.exports = yeomanGenerator.Base.extend({
    * @see Rules: https://en.wikipedia.org/wiki/Ordinal_indicator#English
    * @private
   */
-  _getOrdinal: function (number) {
+  _getOrdinal: (number) => {
     var suffix = ['th', 'st', 'nd', 'rd']
     var v = number % 100
     return number + (suffix[(v - 20) % 10] || suffix[v] || suffix[0])
@@ -131,14 +131,14 @@ module.exports = yeomanGenerator.Base.extend({
       name: `addAttribute${this.attrs.length}`,
       message: `Add ${ordinalNumber} attribute?`,
       default: true
-    }, function (answers) {
+    }, (answers) => {
       if (answers[`addAttribute${this.attrs.length}`]) {
         this._promptAttributeName(arguments, done)
       } else {
         this._writing.apply(this, arguments)
         done()
       }
-    }.bind(this))
+    })
   },
 
   /**
@@ -157,12 +157,12 @@ module.exports = yeomanGenerator.Base.extend({
       type: 'input',
       name: `attributeName${this.attrs.length}`,
       message: 'Attribute name',
-      validate: function (input) {
+      validate: (input) => {
         return input.length > 0
       }
-    }, function (answers) {
+    }, (answers) => {
       this._promptAttributeType(answers, args, done)
-    }.bind(this))
+    })
   },
 
   /**
@@ -182,17 +182,17 @@ module.exports = yeomanGenerator.Base.extend({
       name: `attributeType${this.attrs.length}`,
       message: 'Which type',
       choices: [ 'string', 'number', 'object' ]
-    }, function (answers) {
+    }, (answers) => {
       _.extend(answers, attributeNameAnswers)
       if (answers[`attributeType${this.attrs.length}`] !== 'object') {
         this._addAttribute(answers, args, done)
         return
       }
 
-      this._promptAttributeClassName(answers, function () {
+      this._promptAttributeClassName(answers, () => {
         this._addAttribute(answers, args, done)
-      }.bind(this))
-    }.bind(this))
+      })
+    })
   },
 
   /**
@@ -207,15 +207,15 @@ module.exports = yeomanGenerator.Base.extend({
       type: 'input',
       name: `attributeClassName${this.attrs.length}`,
       message: 'Class name',
-      validate: function (input) {
+      validate: (input) => {
         return input.length > 0
       }
-    }, function (answers) {
+    }, (answers) => {
       objectAnswer.isObject = true
       objectAnswer[`attributeType${this.attrs.length}`] =
         answers[`attributeClassName${this.attrs.length}`]
       callback()
-    }.bind(this))
+    })
   },
 
   /**
