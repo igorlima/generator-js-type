@@ -6,12 +6,16 @@ var helpers = require('yeoman-generator').test
 var assert = require('yeoman-generator').assert
 var spawn = require('child_process').spawn
 var yeoman = require('yeoman-environment')
+var async = require('async')
 
-function runFlowType (temporary_dir, callback) {
+var runFlowType = function (temporary_dir, callback) {
   var flow = spawn('flow', [ 'check', __dirname + '/tmp' ])
+  var temporary_dirs = typeof temporary_dir === 'string' ? [temporary_dir] : temporary_dir
 
   fs.removeSync(path.join(__dirname, 'tmp/*.js'))
-  fs.copySync(temporary_dir, path.join(__dirname, 'tmp'))
+  temporary_dirs.forEach(function (dir) {
+    fs.copySync(dir, path.join(__dirname, 'tmp'))
+  })
 
   // https://nodejs.org/api/child_process.html
   flow.stderr.on('data', function (data) {
@@ -67,7 +71,7 @@ describe('generator app', function () {
       assert.fileContent('TestClass.js', /constructor[(][\s]*[)] {/)
     })
 
-    it('can be validated via FlowType', function (done) {
+    it('need to be validated via FlowType', function (done) {
       runFlowType(this.generator_temporary_dir, function (code) {
         assert.strictEqual(code, 0)
         done()
@@ -93,8 +97,76 @@ describe('generator app', function () {
         })
         .on('end', done)
     })
+
     it('have a string variable declared', function () {
       assert.fileContent('Song.js', 'title: string;')
+    })
+
+    it('have a number variable declared', function () {
+      assert.fileContent('Song.js', 'price: number;')
+    })
+
+    it('have both string and number arguments in the constructor', function () {
+      assert.fileContent('Song.js', /constructor[(] title:string, price:number [)] {/)
+    })
+
+    it('need to be validated by FlowType', function (done) {
+      runFlowType(this.generator_temporary_dir, function (code) {
+        assert.strictEqual(code, 0)
+        done()
+      })
+    })
+  })
+
+  describe('a class importing other classes', function () {
+    var createEmptyClass = function (classname, generator_temporary_dirs, callback) {
+      helpers.run(path.join(__dirname, '../generators/app'))
+        .inTmpDir(function (dir) {
+          generator_temporary_dirs.push(dir)
+        })
+        .withArguments([classname])
+        .withPrompts({ addAttribute0: false })
+        .on('end', callback)
+    }
+    before(function (done) {
+      this.generator_temporary_dirs = []
+      async.waterfall([
+        function (callback) {
+          createEmptyClass('Track', this.generator_temporary_dirs, callback)
+        }.bind(this),
+        function (callback) {
+          createEmptyClass('Artirst', this.generator_temporary_dirs, callback)
+        }.bind(this)
+      ], function () {
+        helpers.run(path.join(__dirname, '../generators/app'))
+        .inTmpDir(function (dir) {
+          this.generator_temporary_dirs.push(dir)
+        }.bind(this))
+        .withArguments(['Song'])
+        .withPrompts({
+          addAttribute0: true,
+          attributeName0: 'track',
+          attributeType0: 'object',
+          attributeClassName0: 'Track',
+          addAttribute1: true,
+          attributeName1: 'artist',
+          attributeType1: 'object',
+          attributeClassName1: 'Artirst',
+          addAttribute2: false
+        })
+        .on('end', done)
+      }.bind(this))
+    })
+
+    it('import all classes', function () {
+      assert.fileContent('Song.js', 'import { Track } from "./Track"')
+    })
+
+    it('need to be validated by FlowType', function (done) {
+      runFlowType(this.generator_temporary_dirs, function (code) {
+        assert.strictEqual(code, 0)
+        done()
+      })
     })
   })
 })

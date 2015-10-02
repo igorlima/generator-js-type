@@ -91,7 +91,7 @@ module.exports = generators.Base.extend({
       choices: [ 'string', 'number', 'object' ]
     }, function (answers) {
       _.extend(answers, attributeNameAnswers)
-      if (answers.type !== 'object') {
+      if (answers['attributeType' + this.attrs.length] !== 'object') {
         this._addAttribute(answers, args, done)
         return
       }
@@ -105,22 +105,24 @@ module.exports = generators.Base.extend({
   _promptAttributeObjectName: function (objectAnswer, callback) {
     this.prompt({
       type: 'input',
-      name: 'classname',
+      name: 'attributeClassName' + this.attrs.length,
       message: 'Class name',
       validate: function (input) {
         return input.length > 0
       }
     }, function (answers) {
       objectAnswer.isObject = true
-      objectAnswer.type = answers.classname
+      objectAnswer['attributeType' + this.attrs.length] = answers['attributeClassName' + this.attrs.length]
       callback()
-    })
+    }.bind(this))
   },
 
   _addAttribute: function (answers, args, done) {
     this.attrs.push({
       name: answers['attributeName' + this.attrs.length],
-      type: answers['attributeType' + this.attrs.length]
+      type: answers['attributeType' + this.attrs.length],
+      isObject: answers.isObject,
+      objectName: answers['attributeType' + this.attrs.length]
     })
     this._promptAttribute(args, done)
   },
