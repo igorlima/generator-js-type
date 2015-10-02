@@ -10,6 +10,29 @@ module.exports = generators.Base.extend({
     this.log(this.templatePath('index.js'))
   },
 
+  _method: function () {
+    this.log('won\'t be called automatically')
+    this.log('Cause method name is prefixed by an underscore (e.g. _method).')
+  },
+
+  /**
+    Rules: https://en.wikipedia.org/wiki/Ordinal_indicator#English
+
+    `st` is used with numbers ending in 1 (e.g. 1st, pronounced first)
+    `nd` is used with numbers ending in 2 (e.g. 92nd, pronounced ninety-second)
+    `rd` is used with numbers ending in 3 (e.g. 33rd, pronounced thirty-third)
+    As an exception to the above rules, all the "teen" numbers ending with 11, 12 or 13 use -th
+    (e.g. 11th, pronounced eleventh, 112th, pronounced one hundred [and] twelfth)
+    `th` is used for all other numbers (e.g. 9th, pronounced ninth).
+
+    Gist: https://gist.github.com/jlbruno/1535691
+  */
+  _getOrdinal: function (number) {
+    var suffix = ['th', 'st', 'nd', 'rd']
+    var v = number % 100
+    return number + (suffix[(v - 20) % 10] || suffix[v] || suffix[0])
+  },
+
   // The name `constructor` is important here
   constructor: function () {
     // Calling the super constructor is important so our generator is correctly set up
@@ -26,35 +49,60 @@ module.exports = generators.Base.extend({
     this.option('coffee') // This method adds support for a `--coffee` flag
   },
 
-  _method: function () {
-    this.log('won\'t be called automatically')
-    this.log('Cause method name is prefixed by an underscore (e.g. _method).')
+  askForAttribute: function () {
+    this._promptAttribute(arguments, this.async())
   },
 
-  askForAttribute: function () {
-    var done = this.async()
+  _promptAttribute: function (args, done) {
+    var ordinalNumber = this._getOrdinal(this.attrs.length + 1)
     this.prompt({
       type: 'confirm',
-      name: 'newAttribute',
-      message: 'Do you wanna add new attribute',
+      name: 'addAttribute' + this.attrs.length,
+      message: 'Add ' + ordinalNumber + ' attribute?',
       default: true
     }, function (answers) {
-      if (answers.newAttribute) {
-        this._promptAttribute.apply(this, arguments)
+      if (answers['addAttribute' + this.attrs.length]) {
+        this._promptAttributeName(arguments, done)
       } else {
         this._writing.apply(this, arguments)
+        done()
       }
-      done()
     }.bind(this))
   },
 
-  _addAttribute: function (answers, args, done) {
-    this.attrs.push(answers)
-    this.askForAttribute.apply(this, args)
-    done()
+  _promptAttributeName: function (args, done) {
+    this.prompt({
+      type: 'input',
+      name: 'attributeName' + this.attrs.length,
+      message: 'Attribute name',
+      validate: function (input) {
+        return input.length > 0
+      }
+    }, function (answers) {
+      this._promptAttributeType(answers, args, done)
+    }.bind(this))
   },
 
-  _promptObjectAttribute: function (objectAnswer, callback) {
+  _promptAttributeType: function (attributeNameAnswers, args, done) {
+    this.prompt({
+      type: 'list',
+      name: 'attributeType' + this.attrs.length,
+      message: 'Which type',
+      choices: [ 'string', 'number', 'object' ]
+    }, function (answers) {
+      _.extend(answers, attributeNameAnswers)
+      if (answers.type !== 'object') {
+        this._addAttribute(answers, args, done)
+        return
+      }
+
+      this._promptAttributeObjectName(answers, function () {
+        this._addAttribute(answers, args, done)
+      }.bind(this))
+    }.bind(this))
+  },
+
+  _promptAttributeObjectName: function (objectAnswer, callback) {
     this.prompt({
       type: 'input',
       name: 'classname',
@@ -69,30 +117,12 @@ module.exports = generators.Base.extend({
     })
   },
 
-  _promptAttribute: function () {
-    var done = this.async()
-    this.prompt([ {
-      type: 'input',
-      name: 'name',
-      message: 'Attribute name',
-      validate: function (input) {
-        return input.length > 0
-      }
-    }, {
-      type: 'list',
-      name: 'type',
-      message: 'Which type',
-      choices: [ 'string', 'number', 'object' ]
-    } ], function (answers) {
-      if (answers.type !== 'object') {
-        this._addAttribute(answers, arguments, done)
-        return
-      }
-
-      this._promptObjectAttribute(answers, function () {
-        this._addAttribute(answers, arguments, done)
-      }.bind(this))
-    }.bind(this))
+  _addAttribute: function (answers, args, done) {
+    this.attrs.push({
+      name: answers['attributeName' + this.attrs.length],
+      type: answers['attributeType' + this.attrs.length]
+    })
+    this._promptAttribute(args, done)
   },
 
   _writing: function () {

@@ -48,7 +48,7 @@ describe('generator app', function () {
           this.generator_temporary_dir = dir
         }.bind(this))
         .withArguments(['TestClass'])         // Mock the arguments
-        .withPrompts({ newAttribute: false }) // Mock the prompt answers
+        .withPrompts({ addAttribute0: false }) // Mock the prompt answers
         .on('ready', function (generator) {
           // This is called right before `generator.run()` is called
         })
@@ -72,6 +72,29 @@ describe('generator app', function () {
         assert.strictEqual(code, 0)
         done()
       })
+    })
+  })
+
+  describe('a class with two different attributes', function () {
+    before(function (done) {
+      helpers.run(path.join(__dirname, '../generators/app'))
+        .inTmpDir(function (dir) {
+          this.generator_temporary_dir = dir
+        }.bind(this))
+        .withArguments(['Song'])
+        .withPrompts({
+          addAttribute0: true,
+          attributeName0: 'title',
+          attributeType0: 'string',
+          addAttribute1: true,
+          attributeName1: 'price',
+          attributeType1: 'number',
+          addAttribute2: false
+        })
+        .on('end', done)
+    })
+    it('have a string variable declared', function () {
+      assert.fileContent('Song.js', 'title: string;')
     })
   })
 })
