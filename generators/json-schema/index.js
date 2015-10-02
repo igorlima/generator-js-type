@@ -1,14 +1,14 @@
-var generators = require('yeoman-generator')
+var yeomanGenerator = require('yeoman-generator')
 var _ = require('lodash')
 var fs = require('fs')
 var path = require('path')
 
 /**
- * To override the generator constructor, pass a constructor function to `extend()` like so:
+ * To override the yeoman generator constructor, pass a constructor function to `extend()` like so:
  *
  * @see http://yeoman.io/authoring/index.html
  */
-module.exports = generators.Base.extend({
+module.exports = yeomanGenerator.Base.extend({
 
   /**
    * Overwriting the constructor
@@ -21,8 +21,8 @@ module.exports = generators.Base.extend({
    * @constrcutor
    */
   constructor: function () {
-    // Calling the super constructor is important so our generator is correctly set up
-    generators.Base.apply(this, arguments)
+    // Calling the super constructor is important so the generator is correctly set up
+    yeomanGenerator.Base.apply(this, arguments)
     // This makes `classname` a required argument.
     this.argument('filepath', { type: String, required: true, desc: 'json-schema file path' })
     // And then access it later on this way; e.g. CamelCased

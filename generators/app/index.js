@@ -1,12 +1,12 @@
-var generators = require('yeoman-generator')
+var yeomanGenerator = require('yeoman-generator')
 var _ = require('lodash')
 
 /**
- * To override the generator constructor, pass a constructor function to `extend()` like so:
+ * To override the yeoman generator constructor, pass a constructor function to `extend()` like so:
  *
  * @see http://yeoman.io/authoring/index.html
  */
-module.exports = generators.Base.extend({
+module.exports = yeomanGenerator.Base.extend({
 
   /**
    * Helper and private methods
@@ -18,7 +18,7 @@ module.exports = generators.Base.extend({
    * <ul>
    * <li>Prefix method name by an underscore (e.g. `_method`)
    * <li>Use instance methods
-   * <li>Extend a parent generator
+   * <li>Extend a parent yeoman generator
    * </ul>
    *
    * @see http://yeoman.io/authoring/running-context.html
@@ -78,7 +78,7 @@ module.exports = generators.Base.extend({
    */
   constructor: function () {
     // Calling the super constructor is important so the generator is correctly set up
-    generators.Base.apply(this, arguments)
+    yeomanGenerator.Base.apply(this, arguments)
 
     // This makes `classname` a required argument.
     this.argument('classname', { type: String, required: true, desc: 'Class name' })
@@ -107,7 +107,7 @@ module.exports = generators.Base.extend({
 
   /**
    * User interactions
-   * Prompts are the main way a generator interacts with a user.
+   * Prompts are the main way a yeoman generator interacts with a user.
    * The prompt module is provided by `Inquirer.js`.
    * Refer to its API for a list of available prompt options.
    *
@@ -241,7 +241,7 @@ module.exports = generators.Base.extend({
    */
   _writing: function () {
     /**
-     * Generators expose all file methods on `this.fs`,
+     * Yeoman generators expose all file methods on `this.fs`,
      * which is an instance of `mem-fs editor`.
      * Make sure to check the module documentation for all available methods.
      *
