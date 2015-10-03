@@ -7,3 +7,4 @@ before_script:
   #  - https://www.npmjs.com/package/flow-bin
   - npm install --global flow-bin
 script: npm test
+after_success: npm run coverage

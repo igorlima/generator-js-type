@@ -1,6 +1,6 @@
 generator-js-type
 ==========================
-[![Build Status](https://travis-ci.org/igorlima/generator-js-type.png)](https://travis-ci.org/igorlima/generator-js-type) [![Node dependencies status](https://david-dm.org/igorlima/generator-js-type.png)](https://david-dm.org/igorlima/generator-js-type) [![npm version](https://badge.fury.io/js/generator-js-type.svg)](http://badge.fury.io/js/generator-js-type) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
+[![Build Status](https://travis-ci.org/igorlima/generator-js-type.png)](https://travis-ci.org/igorlima/generator-js-type) [![Node dependencies status](https://david-dm.org/igorlima/generator-js-type.png)](https://david-dm.org/igorlima/generator-js-type) [![npm version](https://badge.fury.io/js/generator-js-type.svg)](http://badge.fury.io/js/generator-js-type) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard) [![Coverage Status](https://coveralls.io/repos/igorlima/generator-js-type/badge.svg?branch=&service=github)](https://coveralls.io/github/igorlima/generator-js-type?branch=)
 
 
 It's a [Yeoman generator](http://yeoman.io/authoring/index.html).
