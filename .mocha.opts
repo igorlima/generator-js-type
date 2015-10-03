@@ -1,0 +1,2 @@
+--globals __coverage__
+--check-leaks

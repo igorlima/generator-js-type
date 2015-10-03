@@ -35,7 +35,7 @@
     ]
   },
   "scripts": {
-    "test": "standard && nyc _mocha",
+    "test": "standard && nyc _mocha --opts .mocha.opts",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   }
 }
