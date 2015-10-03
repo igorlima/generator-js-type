@@ -1,6 +1,12 @@
 generator-js-type
 ==========================
-[![Build Status](https://travis-ci.org/igorlima/generator-js-type.png)](https://travis-ci.org/igorlima/generator-js-type) [![Node dependencies status](https://david-dm.org/igorlima/generator-js-type.png)](https://david-dm.org/igorlima/generator-js-type) [![npm version](https://badge.fury.io/js/generator-js-type.svg)](http://badge.fury.io/js/generator-js-type) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard) [![Coverage Status](https://coveralls.io/repos/igorlima/generator-js-type/badge.svg?branch=&service=github)](https://coveralls.io/github/igorlima/generator-js-type?branch=)
+
+[![Build Status][travis-image]][travis-url]
+[![Node dependencies status][david-image]][david-url]
+[![Node dev dependencies status][david-dev-image]][david-dev-url]
+[![npm version][npm-image]][npm-url]
+[![js-standard-style][standard-image]][standard-url]
+[![Coverage Status][coveralls-image]][coveralls-url]
 
 
 It's a [Yeoman generator](http://yeoman.io/authoring/index.html).
@@ -17,3 +23,16 @@ While the Readme.md is not done, please take a look at https://github.com/igorli
 - [Testing guidelines](http://yeoman.io/contributing/testing-guidelines.html)
 - [ECMAScript 6](https://github.com/lukehoban/es6features)
 - [ECMAScript 6 compatibility table](https://kangax.github.io/compat-table/es6/)
+
+[travis-url]: https://travis-ci.org/igorlima/generator-js-type
+[travis-image]: https://travis-ci.org/igorlima/generator-js-type.png
+[david-url]: https://david-dm.org/igorlima/generator-js-type
+[david-image]: https://david-dm.org/igorlima/generator-js-type.png
+[david-dev-url]: https://david-dm.org/igorlima/generator-js-type#info=devDependencies&view=table
+[david-dev-image]: https://david-dm.org/igorlima/generator-js-type/dev-status.svg
+[npm-url]: http://badge.fury.io/js/generator-js-type
+[npm-image]: https://badge.fury.io/js/generator-js-type.svg
+[standard-url]: https://github.com/feross/standard
+[standard-image]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat
+[coveralls-url]: https://coveralls.io/github/igorlima/generator-js-type?branch=
+[coveralls-image]: https://coveralls.io/repos/igorlima/generator-js-type/badge.svg?branch=&service=github
