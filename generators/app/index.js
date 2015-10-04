@@ -157,9 +157,7 @@ module.exports = yeomanGenerator.Base.extend({
       type: 'input',
       name: `attributeName${this.attrs.length}`,
       message: 'Attribute name',
-      validate: (input) => {
-        return input.length > 0
-      }
+      validate: this._validateUserInputIsNotEmpty
     }, (answers) => {
       this._promptAttributeType(answers, args, done)
     })
@@ -207,9 +205,7 @@ module.exports = yeomanGenerator.Base.extend({
       type: 'input',
       name: `attributeClassName${this.attrs.length}`,
       message: 'Class name',
-      validate: (input) => {
-        return input.length > 0
-      }
+      validate: this._validateUserInputIsNotEmpty
     }, (answers) => {
       objectAnswer.isObject = true
       objectAnswer[`attributeType${this.attrs.length}`] =
@@ -235,6 +231,10 @@ module.exports = yeomanGenerator.Base.extend({
       objectName: answers[`attributeType${this.attrs.length}`]
     })
     this._promptAttribute(args, done)
+  },
+
+  _validateUserInputIsNotEmpty: (input) => {
+    return input.length > 0
   },
 
   /**

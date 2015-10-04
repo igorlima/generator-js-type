@@ -8,7 +8,7 @@ var async = require('async')
 var runFlowType = require('./helpers').runFlowType
 var createEmptyClass = require('./helpers').createEmptyClass
 
-describe('example for testing private method', function () {
+describe('private methods', function () {
   before(function (done) {
     helpers.run(path.join(__dirname, '../generators/app'))
       .withArguments(['TestClass']) // Mock the arguments
@@ -18,11 +18,20 @@ describe('example for testing private method', function () {
         done()
       })
   })
-  it('call any private method', function () {
+
+  it('simple example calling any private method', function () {
     assert(this.myYeomanGenerator._exampleForPrivateMethod)
     assert.doesNotThrow(() => {
       this.myYeomanGenerator._exampleForPrivateMethod()
     })
+  })
+
+  it('any empty user input is NOT validated', function () {
+    assert.strictEqual(this.myYeomanGenerator._validateUserInputIsNotEmpty(''), false)
+  })
+
+  it('user input is validated if length longer than 0', function () {
+    assert(this.myYeomanGenerator._validateUserInputIsNotEmpty('any value'))
   })
 })
 
