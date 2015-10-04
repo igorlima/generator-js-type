@@ -8,6 +8,24 @@ var async = require('async')
 var runFlowType = require('./helpers').runFlowType
 var createEmptyClass = require('./helpers').createEmptyClass
 
+describe('example for testing private method', function () {
+  before(function (done) {
+    helpers.run(path.join(__dirname, '../generators/app'))
+      .withArguments(['TestClass']) // Mock the arguments
+      .on('ready', (generator) => {
+        // This is called right before `generator.run()` is called
+        this.myYeomanGenerator = generator
+        done()
+      })
+  })
+  it('call any private method', function () {
+    assert(this.myYeomanGenerator._exampleForPrivateMethod)
+    assert.doesNotThrow(() => {
+      this.myYeomanGenerator._exampleForPrivateMethod()
+    })
+  })
+})
+
 describe('generator app', function () {
   describe('calling without classname', function () {
     before(function () {

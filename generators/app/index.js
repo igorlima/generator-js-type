@@ -24,7 +24,7 @@ module.exports = yeomanGenerator.Base.extend({
    * @see http://yeoman.io/authoring/running-context.html
    * @private
    */
-  _exampleForPrivateMethod: () => {
+  _exampleForPrivateMethod: function () {
     this.log('won\'t be called automatically')
     this.log('Cause method name is prefixed by an underscore (e.g. _method).')
 
