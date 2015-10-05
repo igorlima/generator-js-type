@@ -1,17 +1,17 @@
 /* @flow */
 <% if ( attributes.filter( function(attr) { return !!attr.isObject || !!attr.isArray } ).length > 0 ) { %>
 <% attributes.filter( function(attr) { return !!attr.isObject || !!attr.isArray } ).forEach(function(attribute){ %>
-import { <%= attribute.type %> } from "./<%= attribute.type %>";
+import { <%= attribute.objectName %> } from "./<%= attribute.objectName %>";
 <% }); %>
 <% } %>
 
 class <%= classname %> {
 
   <% attributes.forEach(function(attribute){ %>
-  <%= attribute.name %>: <%- attribute.toString %>;
+  <%= attribute.name %>: <%- attribute.type %>;
   <% }); %>
 
-  constructor( <%- attributes.map(function(attr) { return attr.name + ':' + attr.toString }).join(', ') %> ) {
+  constructor( <%- attributes.map(function(attr) { return attr.name + ':' + attr.type }).join(', ') %> ) {
     <% attributes.forEach(function(attribute) { %>
     this.<%= attribute.name %> = <%= attribute.name%>;
     <% }); %>
