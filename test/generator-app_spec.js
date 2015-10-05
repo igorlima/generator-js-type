@@ -27,7 +27,10 @@ describe('private methods', function () {
   })
 
   it('any empty user input is NOT validated', function () {
-    assert.strictEqual(this.myYeomanGenerator._validateUserInputIsNotEmpty(''), false)
+    assert.strictEqual(
+      this.myYeomanGenerator._validateUserInputIsNotEmpty(''),
+      false
+    )
   })
 
   it('user input is validated if length longer than 0', function () {
@@ -40,7 +43,8 @@ describe('generator app', function () {
     before(function () {
       this.generator_environment = yeoman.createEnv([], {})
       this.generator = path.join(__dirname, '../generators/app')
-      this.generator_namespace = this.generator_environment.namespace(this.generator)
+      this.generator_namespace =
+        this.generator_environment.namespace(this.generator)
     })
 
     it('throw an error', function () {
@@ -48,7 +52,8 @@ describe('generator app', function () {
         this.generator_environment.register(this.generator)
         this.generator_environment.create(this.generator_namespace, {})
       }.bind(this), function (err) {
-        return (err instanceof Error) && /Did not provide required argument/.test(err)
+        return (err instanceof Error) &&
+          /Did not provide required argument/.test(err)
       }, 'not throwring any error')
     })
   })
@@ -61,10 +66,12 @@ describe('generator app', function () {
         }.bind(this))
         .withArguments(['TestClass'])         // Mock the arguments
         .withPrompts({ addAttribute0: false }) // Mock the prompt answers
-        .on('ready', function (generator) {
+        .on('ready', function () {
+          // `generator` is available as the first argument here
           // This is called right before `generator.run()` is called
         })
-        .on('end', done) // generator is available as this.generator in 'end' listener context
+        // generator is available as this.generator in 'end' listener context
+        .on('end', done)
     })
 
     it('create a js file', function () {
@@ -116,7 +123,10 @@ describe('generator app', function () {
     })
 
     it('have both string and number arguments in the constructor', function () {
-      assert.fileContent('Song.js', /constructor[(] title:string, price:number [)] {/)
+      assert.fileContent(
+        'Song.js',
+        /constructor[(] title:string, price:number [)] {/
+      )
     })
 
     it('need to be validated by FlowType', function (done) {

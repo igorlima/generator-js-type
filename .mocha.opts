@@ -1,2 +1,3 @@
 --globals __coverage__
 --check-leaks
+--timeout 4000

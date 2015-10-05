@@ -36,7 +36,8 @@
     ]
   },
   "scripts": {
-    "test": "standard && jsinspect generators/**/*.js && nyc _mocha --opts .mocha.opts",
+    "test": "npm run lint && nyc _mocha --opts .mocha.opts",
+    "lint": "standard && eslint **/*.js && jsinspect generators/**/*.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   }
 }

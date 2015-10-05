@@ -5,6 +5,6 @@ before_script:
   # Install FlowType in CI env:
   #  - https://github.com/facebook/flow
   #  - https://www.npmjs.com/package/flow-bin
-  - npm install --global flow-bin
+  - npm install --global flow-bin eslint
 script: npm test
 after_success: npm run coverage

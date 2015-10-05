@@ -13,7 +13,8 @@ describe('generator json schema', function () {
     before(function () {
       this.generator_environment = yeoman.createEnv([], {})
       this.generator = path.join(__dirname, '../generators/json-schema')
-      this.generator_namespace = this.generator_environment.namespace(this.generator)
+      this.generator_namespace =
+        this.generator_environment.namespace(this.generator)
     })
 
     it('throw an error', function () {
@@ -21,7 +22,8 @@ describe('generator json schema', function () {
         this.generator_environment.register(this.generator)
         this.generator_environment.create(this.generator_namespace, {})
       }.bind(this), function (err) {
-        return (err instanceof Error) && /Did not provide required argument/.test(err)
+        return (err instanceof Error) &&
+          /Did not provide required argument/.test(err)
       }, 'not throwring any error')
     })
   })
@@ -41,7 +43,14 @@ describe('generator json schema', function () {
     })
 
     it('have a constructor definition in the class', function () {
-      assert.fileContent('Song.js', /constructor[(] id:number, title:string, artist:string, genre:string [)] {/)
+      assert.fileContent(
+        'Song.js',
+        new RegExp([
+          'constructor[(]',
+          ' id:number, title:string, artist:string, genre:string ',
+          '[)] {'
+        ].join(''))
+      )
     })
 
     it('have id variable declared', function () {
@@ -70,10 +79,18 @@ describe('generator json schema', function () {
       this.generator_temporary_dirs = []
       async.waterfall([
         function (callback) {
-          createClassFromJsonSchema('json-schema/song.json', this.generator_temporary_dirs, callback)
+          createClassFromJsonSchema(
+            'json-schema/song.json',
+            this.generator_temporary_dirs,
+            callback
+          )
         }.bind(this),
         function (callback) {
-          createClassFromJsonSchema('json-schema/songList.json', this.generator_temporary_dirs, callback)
+          createClassFromJsonSchema(
+            'json-schema/songList.json',
+            this.generator_temporary_dirs,
+            callback
+          )
         }.bind(this)
       ], done)
     })
@@ -87,7 +104,10 @@ describe('generator json schema', function () {
     })
 
     it('have sont list arguments in the constructor', function () {
-      assert.fileContent('SongList.js', /constructor[(] songs:Array<Song> [)] {/)
+      assert.fileContent(
+        'SongList.js',
+        /constructor[(] songs:Array<Song> [)] {/
+      )
     })
 
     it('need to be validated by FlowType', function (done) {

@@ -6,7 +6,9 @@ var helpers = require('yeoman-generator').test
 
 exports.runFlowType = function (temporary_dir, callback) {
   var flow = spawn('flow', [ 'check', __dirname + '/tmp' ])
-  var temporary_dirs = typeof temporary_dir === 'string' ? [temporary_dir] : temporary_dir
+  var temporary_dirs = typeof temporary_dir === 'string'
+    ? [temporary_dir]
+    : temporary_dir
 
   fs.removeSync(path.join(__dirname, 'tmp/*.js'))
   temporary_dirs.forEach(function (dir) {
@@ -15,7 +17,8 @@ exports.runFlowType = function (temporary_dir, callback) {
 
   // https://nodejs.org/api/child_process.html
   flow.stderr.on('data', function (data) {
-    console.error('flow stderr: ' + data) // Log error in CI environment if needed
+    // Log error in CI environment if needed
+    console.warn('' + data) // eslint-disable-line no-console
   })
 
   flow.on('close', function (code) {
@@ -23,20 +26,20 @@ exports.runFlowType = function (temporary_dir, callback) {
   })
 }
 
-exports.createEmptyClass = function (classname, generator_temporary_dirs, callback) {
+exports.createEmptyClass = function (classname, temporary_dirs, callback) {
   helpers.run(path.join(__dirname, '../generators/app'))
     .inTmpDir(function (dir) {
-      generator_temporary_dirs.push(dir)
+      temporary_dirs.push(dir)
     })
     .withArguments([classname])
     .withPrompts({ addAttribute0: false })
     .on('end', callback)
 }
 
-exports.createClassFromJsonSchema = function (jsonSchemaPath, generator_temporary_dirs, callback) {
+exports.createClassFromJsonSchema = function (jsonSchemaPath, dirs, callback) {
   helpers.run(path.join(__dirname, '../generators/json-schema'))
     .inTmpDir(function (dir) {
-      generator_temporary_dirs.push(dir)
+      dirs.push(dir)
     })
     .withArguments(path.join(__dirname, jsonSchemaPath))
     .on('end', callback)
