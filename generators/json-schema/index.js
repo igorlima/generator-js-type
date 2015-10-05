@@ -54,6 +54,30 @@ module.exports = yeomanGenerator.Base.extend({
     )
   },
 
+  _getTemplateAttributes: function (jsonSchema) {
+    var getObjectName = this._getObjectName
+
+    return _.map(jsonSchema.properties, (property, propertyName) => {
+      var array = property.type === 'array' && {
+        objectName: getObjectName(property, true),
+        type: () => {
+          return `Array<${objectName}>`
+        }
+      }
+      var objectName = array ? array.objectName : getObjectName(property)
+
+      return {
+        name: _.camelCase(propertyName),
+        isArray: !!array,
+        objectName: objectName,
+        type: array ? array.type() : objectName,
+        shouldBeImported: function () {
+          return !!this.isArray && !_.contains(['string', 'number'], this.objectName)
+        }
+      }
+    })
+  },
+
   /**
    * Yeoman is very careful when it comes to overwriting users files.
    * Basically, every write happening on a pre-existing file will go through
@@ -70,7 +94,7 @@ module.exports = yeomanGenerator.Base.extend({
    * @see Template format http://ejs.co/
    * @public
    */
-  writing: function () {
+  writeFile: function () {
     var done = this.async()
     fs.readFile(this.filepath, 'utf8', (err, data) => {
       if (err) throw err
@@ -78,30 +102,13 @@ module.exports = yeomanGenerator.Base.extend({
       var jsonSchema = JSON.parse(data)
       var ext = path.extname(this.filepath)
       var filename = _.capitalize(path.basename(this.filepath, ext))
-      var getObjectName = this._getObjectName
 
       this.fs.copyTpl(
         this.templatePath('../../app/templates/class.js'),
         this.destinationPath(`${filename}.js`),
         {
           classname: filename,
-          attributes: _.map(jsonSchema.properties,
-            (property, propertyName) => {
-              var array = property.type === 'array' && {
-                objectName: getObjectName(property, true),
-                type: () => {
-                  return `Array<${objectName}>`
-                }
-              }
-              var objectName = array ? array.objectName : getObjectName(property)
-
-              return {
-                name: _.camelCase(propertyName),
-                isArray: !!array,
-                objectName: objectName,
-                type: array ? array.type() : objectName
-              }
-            })
+          attributes: this._getTemplateAttributes(jsonSchema)
         }
       )
 
