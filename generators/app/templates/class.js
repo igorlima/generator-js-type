@@ -1,9 +1,16 @@
 /* @flow */
-<% if ( attributes.filter( function(attr) { return !!attr.isObject || !!attr.isArray } ).length > 0 ) { %>
-<% attributes.filter( function(attr) { return !!attr.isObject || !!attr.isArray } ).forEach(function(attribute){ %>
+<%
+  var PRIMITIVE_TYPES = ['string', 'integer']
+  if ( attributes.filter( function(attr) { return !!attr.isObject || !!attr.isArray } ).length > 0 ) {
+    attributes.filter( function(attr) { return !!attr.isObject || !!attr.isArray } ).forEach(function(attribute){
+      if (!(PRIMITIVE_TYPES.indexOf(attribute.objectName) !== -1)) {
+-%>
 import { <%= attribute.objectName %> } from "./<%= attribute.objectName %>";
-<% }); %>
-<% } %>
+<%
+      }
+    });
+  }
+-%>
 
 class <%= classname %> {
 

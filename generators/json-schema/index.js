@@ -96,7 +96,7 @@ module.exports = yeomanGenerator.Base.extend({
               var objectName = array ? array.objectName : getObjectName(property)
 
               return {
-                name: propertyName,
+                name: _.camelCase(propertyName),
                 isArray: !!array,
                 objectName: objectName,
                 type: array ? array.type() : objectName
