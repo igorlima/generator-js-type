@@ -135,7 +135,7 @@ module.exports = yeomanGenerator.Base.extend({
       if (answers[`addAttribute${this.attrs.length}`]) {
         this._promptAttributeName(arguments, done)
       } else {
-        this._writing.apply(this, arguments)
+        this._writeFile.apply(this, arguments)
         done()
       }
     })
@@ -254,7 +254,14 @@ module.exports = yeomanGenerator.Base.extend({
    * @see Template format http://ejs.co/
    * @private
    */
-  _writing: function () {
+  _writeFile: function () {
+    _.forEach(this.attrs, (attr) => {
+      _.extend(attr, {
+        shouldBeImported: () => {
+          return !!attr.isObject && !_.contains(['string', 'number'], attr.objectName)
+        }
+      })
+    })
     /**
      * Yeoman generators expose all file methods on `this.fs`,
      * which is an instance of `mem-fs editor`.

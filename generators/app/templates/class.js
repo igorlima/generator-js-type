@@ -1,9 +1,7 @@
 /* @flow */
-<% if ( attributes.filter( function(attr) { return !!attr.isObject || !!attr.isArray } ).length > 0 ) { %>
-<% attributes.filter( function(attr) { return !!attr.isObject || !!attr.isArray } ).forEach(function(attribute){ %>
+<% attributes.filter( function(attr) { return attr.shouldBeImported() } ).forEach(function(attribute) { -%>
 import { <%= attribute.objectName %> } from "./<%= attribute.objectName %>";
-<% }); %>
-<% } %>
+<% }) -%>
 
 class <%= classname %> {
 

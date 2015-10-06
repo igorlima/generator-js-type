@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "ProductId": {
+      "type": "integer"
+    },
+    "HasDynamicImages": {
+      "type": "boolean"
+    },
+    "on Sale": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "additionalItems": false
+    }
+  }
+}

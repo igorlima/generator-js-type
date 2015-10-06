@@ -119,4 +119,42 @@ describe('generator json schema', function () {
       })
     })
   })
+
+  describe('song json schema', function () {
+    before(function (done) {
+      helpers.run(path.join(__dirname, '../generators/json-schema'))
+        .inTmpDir((dir) => {
+          this.generator_temporary_dir = dir
+        })
+        .withArguments(path.join(__dirname, 'json-schema/product.json'))
+        .withOptions({
+          convert: 'integer:number'
+        })
+        .on('end', done)
+    })
+
+    it('should not import string class', function () {
+      assert.noFileContent('Product.js', 'import')
+    })
+
+    it('should not contain space in a variable', function () {
+      assert.fileContent('Product.js', 'onSale: Array<string>;')
+    })
+
+    it('have camel case variables', function () {
+      assert.fileContent('Product.js', 'hasDynamicImages: boolean;')
+    })
+
+    it('convert `integer` to `number` due --convert options', function () {
+      assert.fileContent('Product.js', 'productId: number;')
+    })
+
+    it('need to be validated by FlowType', function (done) {
+      runFlowType(this.generator_temporary_dir, function (code) {
+        assert.file(path.join(__dirname, 'tmp/Product.js'))
+        assert.strictEqual(code, 0)
+        done()
+      })
+    })
+  })
 })

@@ -11,6 +11,19 @@ var path = require('path')
  */
 module.exports = yeomanGenerator.Base.extend({
 
+  _createObjectTypeConverter: function () {
+    typeof temporary_dir === 'string'
+
+    var convertOptions = typeof this.options['convert'] === 'string'
+      ? [ this.options.convert ]
+      : this.options.convert
+
+    this.converter = {}
+    _.map(convertOptions, (option) => {
+      this.converter[option.split(':')[0]] = option.split(':')[1]
+    })
+  },
+
   /**
    * Overwriting the constructor
    *
@@ -35,6 +48,7 @@ module.exports = yeomanGenerator.Base.extend({
     this.filepath = _.camelCase(this.filepath)
     // Next, add your custom code
     this.option('coffee') // This method adds support for a `--coffee` flag
+    this._createObjectTypeConverter()
   },
 
   /**
@@ -44,14 +58,46 @@ module.exports = yeomanGenerator.Base.extend({
    * @param {boolean} isArray True if the property argument is an array
    * @private
    */
-  _getObjectName: (property, isArray) => {
+  _getObjectName: (property, isArray, converter) => {
     var prop = isArray ? property.items : property
-    return !prop.$ref ? prop.type : _.capitalize(
+    var objectName = !prop.$ref ? prop.type : _.capitalize(
       path.basename(
         prop.$ref,
         path.extname(prop.$ref)
       )
     )
+    return converter(objectName) || objectName
+  },
+
+  _converterObjectName: function () {
+    return (objectName) => {
+      return this.converter[objectName] || objectName
+    }
+  },
+
+  _getTemplateAttributes: function (jsonSchema) {
+    var getObjectName = this._getObjectName
+    var converter = this._converterObjectName()
+
+    return _.map(jsonSchema.properties, (property, propertyName) => {
+      var array = property.type === 'array' && {
+        objectName: getObjectName(property, true, converter),
+        type: () => {
+          return `Array<${objectName}>`
+        }
+      }
+      var objectName = array ? array.objectName : getObjectName(property, false, converter)
+
+      return {
+        name: _.camelCase(propertyName),
+        isArray: !!array,
+        objectName: objectName,
+        type: array ? array.type() : objectName,
+        shouldBeImported: function () {
+          return !!this.isArray && !_.contains(['string', 'number', 'Object'], this.objectName)
+        }
+      }
+    })
   },
 
   /**
@@ -70,7 +116,7 @@ module.exports = yeomanGenerator.Base.extend({
    * @see Template format http://ejs.co/
    * @public
    */
-  writing: function () {
+  writeFile: function () {
     var done = this.async()
     fs.readFile(this.filepath, 'utf8', (err, data) => {
       if (err) throw err
@@ -78,30 +124,13 @@ module.exports = yeomanGenerator.Base.extend({
       var jsonSchema = JSON.parse(data)
       var ext = path.extname(this.filepath)
       var filename = _.capitalize(path.basename(this.filepath, ext))
-      var getObjectName = this._getObjectName
 
       this.fs.copyTpl(
         this.templatePath('../../app/templates/class.js'),
         this.destinationPath(`${filename}.js`),
         {
           classname: filename,
-          attributes: _.map(jsonSchema.properties,
-            (property, propertyName) => {
-              var array = property.type === 'array' && {
-                objectName: getObjectName(property, true),
-                type: () => {
-                  return `Array<${objectName}>`
-                }
-              }
-              var objectName = array ? array.objectName : getObjectName(property)
-
-              return {
-                name: propertyName,
-                isArray: !!array,
-                objectName: objectName,
-                type: array ? array.type() : objectName
-              }
-            })
+          attributes: this._getTemplateAttributes(jsonSchema)
         }
       )
 
