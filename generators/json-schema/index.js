@@ -11,6 +11,9 @@ var path = require('path')
  */
 module.exports = yeomanGenerator.Base.extend({
 
+  /**
+   * @private
+   */
   _createObjectTypeConverter: function () {
     typeof temporary_dir === 'string'
 
@@ -69,16 +72,27 @@ module.exports = yeomanGenerator.Base.extend({
     return converter(objectName)
   },
 
+  /**
+   * @private
+   */
   _converterObjectName: function () {
     return (objectName) => {
       return this.converter[objectName] || objectName
     }
   },
 
-  _shouldObjectBeImported: function (objectName) {
-    return !_.contains(['string', 'number', 'Object'], objectName)
+  /**
+   * @private
+   */
+  _shouldObjectBeImported: function () {
+    return (objectName) => {
+      return !_.contains(['string', 'number', 'Object'], objectName)
+    }
   },
 
+  /**
+   * @private
+   */
   _getArrayType: function (jsonSchemaProperties, getObjectName, converter) {
     var typeArray = jsonSchemaProperties.type === 'array' ? {} : null
 
@@ -91,10 +105,13 @@ module.exports = yeomanGenerator.Base.extend({
     })
   },
 
+  /**
+   * @private
+   */
   _getTemplateAttributes: function (jsonSchema) {
     var getObjectName = this._getObjectName
     var converter = this._converterObjectName()
-    var shouldBeImported = this._shouldObjectBeImported
+    var shouldBeImported = this._shouldObjectBeImported()
 
     return _.map(jsonSchema.properties, (properties, propertyName) => {
       var array = this._getArrayType(properties, getObjectName, converter)
@@ -102,7 +119,7 @@ module.exports = yeomanGenerator.Base.extend({
 
       // setTimeout(() => {
       //   var triggerCallback = this.objectName === 'object' &&
-      //     this._shouldObjectBeImported(this.objectName)
+      //     shouldBeImported(this.objectName)
       //   triggerCallback && cascadeCallback && cascadeCallback(properties)
       // })
 

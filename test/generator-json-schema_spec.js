@@ -120,7 +120,7 @@ describe('generator json schema', function () {
     })
   })
 
-  describe('song json schema', function () {
+  describe('product json schema', function () {
     before(function (done) {
       helpers.run(path.join(__dirname, '../generators/json-schema'))
         .inTmpDir((dir) => {
@@ -153,6 +153,64 @@ describe('generator json schema', function () {
       runFlowType(this.generator_temporary_dir, function (code) {
         assert.file(path.join(__dirname, 'tmp/Product.js'))
         assert.strictEqual(code, 0)
+        done()
+      })
+    })
+  })
+
+  describe('searchFilter json schema', function () {
+    describe('without cascade option', function () {
+      before(function (done) {
+        helpers.run(path.join(__dirname, '../generators/json-schema'))
+          .inTmpDir((dir) => {
+            this.generator_temporary_dir = dir
+          })
+          .withArguments(path.join(__dirname, 'json-schema/searchFilter.json'))
+          .withOptions({
+            convert: ['integer:number', 'object:Object']
+          })
+          .on('end', done)
+      })
+
+      it('should NOT import any class', function () {
+        assert.noFileContent('SearchFilter.js', 'import')
+      })
+
+      it('filters is an array of objects', function () {
+        assert.fileContent('SearchFilter.js', 'filters: Array<Object>;')
+      })
+
+      it('sortingTemplate is an object', function () {
+        assert.fileContent('SearchFilter.js', 'sortingTemplate: Object;')
+      })
+
+      it('need to be validated by FlowType', function (done) {
+        runFlowType(this.generator_temporary_dir, function (code) {
+          assert.file(path.join(__dirname, 'tmp/SearchFilter.js'))
+          assert.strictEqual(code, 0)
+          done()
+        })
+      })
+    })
+
+    describe('with cascade option', function () {
+      before(function (done) {
+        helpers.run(path.join(__dirname, '../generators/json-schema'))
+          .inTmpDir((dir) => {
+            this.generator_temporary_dir = dir
+          })
+          .withArguments(path.join(__dirname, 'json-schema/searchFilter.json'))
+          .withOptions({
+            convert: ['integer:number', 'object:Object'],
+            cascade: true
+          })
+          .on('end', done)
+      })
+
+      it('-----', function (done) {
+        require('fs-extra').copySync(
+          this.generator_temporary_dir,
+          path.join(__dirname, 'tmp'))
         done()
       })
     })
