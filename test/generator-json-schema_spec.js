@@ -127,6 +127,9 @@ describe('generator json schema', function () {
           this.generator_temporary_dir = dir
         })
         .withArguments(path.join(__dirname, 'json-schema/product.json'))
+        .withOptions({
+          convert: 'integer:number'
+        })
         .on('end', done)
     })
 
@@ -140,6 +143,10 @@ describe('generator json schema', function () {
 
     it('have camel case variables', function () {
       assert.fileContent('Product.js', 'hasDynamicImages: boolean;')
+    })
+
+    it('convert `integer` to `number` due --convert options', function () {
+      assert.fileContent('Product.js', 'productId: number;')
     })
 
     it('need to be validated by FlowType', function (done) {
