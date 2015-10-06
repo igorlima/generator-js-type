@@ -13,7 +13,7 @@ rules:
     - 80
   complexity:
     - 2
-    - 2
+    - 3
 env:
   es6: true
   node: true

@@ -117,9 +117,9 @@ module.exports = yeomanGenerator.Base.extend({
    *
    * @param {Array.<>} args A list of arguments
    * @param {Function} done A callback returned by `this.async()` in
-   *                        {@code this.promptForUserInput}. This callback should
-   *                        be called manually after finishing the interactive
-   *                        command line with the user
+   *                        {@code this.promptForUserInput}. This callback
+   *                        should be called manually after finishing the
+   *                        interactive command line with the user
    * @see http://yeoman.io/authoring/user-interactions.html
    * @see Inquirer documentation https://github.com/SBoudrias/Inquirer.js
    * @private
@@ -145,9 +145,9 @@ module.exports = yeomanGenerator.Base.extend({
    *
    * @param {Array.<>} args A list of arguments
    * @param {Function} done A callback returned by `this.async()` in
-   *                        {@code this.promptForUserInput}. This callback should
-   *                        be called manually after finishing the interactive
-   *                        command line with the user
+   *                        {@code this.promptForUserInput}. This callback
+   *                        should be called manually after finishing the
+   *                        interactive command line with the user
    * @see http://yeoman.io/authoring/user-interactions.html
    * @see Inquirer documentation https://github.com/SBoudrias/Inquirer.js
    * @private
@@ -167,9 +167,9 @@ module.exports = yeomanGenerator.Base.extend({
    * @param {object} attributeNameAnswers
    * @param {Array.<>} args A list of arguments
    * @param {Function} done A callback returned by `this.async()` in
-   *                        {@code this.promptForUserInput}. This callback should
-   *                        be called manually after finishing the interactive
-   *                        command line with the user
+   *                        {@code this.promptForUserInput}. This callback
+   *                        should be called manually after finishing the
+   *                        interactive command line with the user
    * @see http://yeoman.io/authoring/user-interactions.html
    * @see Inquirer documentation https://github.com/SBoudrias/Inquirer.js
    * @private
@@ -218,9 +218,9 @@ module.exports = yeomanGenerator.Base.extend({
    * @param {object} answers
    * @param {Array.<>} args A list of arguments
    * @param {Function} done A callback returned by `this.async()` in
-   *                        {@code this.promptForUserInput}. This callback should
-   *                        be called manually after finishing the interactive
-   *                        command line with the user
+   *                        {@code this.promptForUserInput}. This callback
+   *                        should be called manually after finishing the
+   *                        interactive command line with the user
    * @private
    */
   _addAttribute: function (answers, args, done) {
@@ -258,7 +258,8 @@ module.exports = yeomanGenerator.Base.extend({
     _.forEach(this.attrs, (attr) => {
       _.extend(attr, {
         shouldBeImported: () => {
-          return !!attr.isObject && !_.contains(['string', 'number'], attr.objectName)
+          return !!attr.isObject &&
+            !_.contains(['string', 'number'], attr.objectName)
         }
       })
     })

@@ -55,18 +55,18 @@ module.exports = yeomanGenerator.Base.extend({
    * @param {object} property
    * @param {string} property.$ref
    * @param {Array.<>} property.items
-   * @param {boolean} isArray True if the property argument is an array
+   * @param {boolean} typeArray True if the property argument is an array
    * @private
    */
-  _getObjectName: (property, isArray, converter) => {
-    var prop = isArray ? property.items : property
+  _getObjectName: (property, typeArray, converter) => {
+    var prop = typeArray ? property.items : property
     var objectName = !prop.$ref ? prop.type : _.capitalize(
       path.basename(
         prop.$ref,
         path.extname(prop.$ref)
       )
     )
-    return converter(objectName) || objectName
+    return converter(objectName)
   },
 
   _converterObjectName: function () {
@@ -75,18 +75,36 @@ module.exports = yeomanGenerator.Base.extend({
     }
   },
 
+  _shouldObjectBeImported: function (objectName) {
+    return !_.contains(['string', 'number', 'Object'], objectName)
+  },
+
+  _getArrayType: function (jsonSchemaProperties, getObjectName, converter) {
+    var typeArray = jsonSchemaProperties.type === 'array' ? {} : null
+
+    var objectName = getObjectName(jsonSchemaProperties, typeArray, converter)
+    return typeArray && _.extend({}, {
+      objectName: objectName,
+      type: function () {
+        return `Array<${objectName}>`
+      }
+    })
+  },
+
   _getTemplateAttributes: function (jsonSchema) {
     var getObjectName = this._getObjectName
     var converter = this._converterObjectName()
+    var shouldBeImported = this._shouldObjectBeImported
 
-    return _.map(jsonSchema.properties, (property, propertyName) => {
-      var array = property.type === 'array' && {
-        objectName: getObjectName(property, true, converter),
-        type: () => {
-          return `Array<${objectName}>`
-        }
-      }
-      var objectName = array ? array.objectName : getObjectName(property, false, converter)
+    return _.map(jsonSchema.properties, (properties, propertyName) => {
+      var array = this._getArrayType(properties, getObjectName, converter)
+      var objectName = getObjectName(properties, array, converter)
+
+      // setTimeout(() => {
+      //   var triggerCallback = this.objectName === 'object' &&
+      //     this._shouldObjectBeImported(this.objectName)
+      //   triggerCallback && cascadeCallback && cascadeCallback(properties)
+      // })
 
       return {
         name: _.camelCase(propertyName),
@@ -94,7 +112,7 @@ module.exports = yeomanGenerator.Base.extend({
         objectName: objectName,
         type: array ? array.type() : objectName,
         shouldBeImported: function () {
-          return !!this.isArray && !_.contains(['string', 'number', 'Object'], this.objectName)
+          return !!this.isArray && shouldBeImported(this.objectName)
         }
       }
     })
@@ -114,9 +132,26 @@ module.exports = yeomanGenerator.Base.extend({
    * @see mem-fs documentation https://github.com/sboudrias/mem-fs
    * @see mem-fs-edito documentation https://github.com/sboudrias/mem-fs-editor
    * @see Template format http://ejs.co/
+   * @private
+   */
+  _writeFile: function (jsonSchema, filename) {
+    this.fs.copyTpl(
+      this.templatePath('../../app/templates/class.js'),
+      this.destinationPath(`${filename}.js`),
+      {
+        classname: filename,
+        attributes: this._getTemplateAttributes(jsonSchema)
+      }
+    )
+  },
+
+  /**
+   * This read the json-schema passed in the `filepath` argument then writes the
+   * JS class file
+   *
    * @public
    */
-  writeFile: function () {
+  readJsonSchemaAndWriteJSFile: function () {
     var done = this.async()
     fs.readFile(this.filepath, 'utf8', (err, data) => {
       if (err) throw err
@@ -125,14 +160,7 @@ module.exports = yeomanGenerator.Base.extend({
       var ext = path.extname(this.filepath)
       var filename = _.capitalize(path.basename(this.filepath, ext))
 
-      this.fs.copyTpl(
-        this.templatePath('../../app/templates/class.js'),
-        this.destinationPath(`${filename}.js`),
-        {
-          classname: filename,
-          attributes: this._getTemplateAttributes(jsonSchema)
-        }
-      )
+      this._writeFile(jsonSchema, filename)
 
       done()
     })
