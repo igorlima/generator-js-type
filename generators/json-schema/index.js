@@ -2,6 +2,7 @@ var yeomanGenerator = require('yeoman-generator')
 var _ = require('lodash')
 var fs = require('fs')
 var path = require('path')
+var pluralize = require('pluralize')
 
 /**
  * To override the yeoman generator constructor, pass a constructor function to
@@ -11,6 +12,9 @@ var path = require('path')
  */
 module.exports = yeomanGenerator.Base.extend({
 
+  /**
+   * @private
+   */
   _createObjectTypeConverter: function () {
     typeof temporary_dir === 'string'
 
@@ -55,48 +59,111 @@ module.exports = yeomanGenerator.Base.extend({
    * @param {object} property
    * @param {string} property.$ref
    * @param {Array.<>} property.items
-   * @param {boolean} isArray True if the property argument is an array
+   * @param {boolean} typeArray True if the property argument is an array
    * @private
    */
-  _getObjectName: (property, isArray, converter) => {
-    var prop = isArray ? property.items : property
+  _getObjectName: (property, typeArray, converter) => {
+    var prop = typeArray ? property.items : property
     var objectName = !prop.$ref ? prop.type : _.capitalize(
       path.basename(
         prop.$ref,
         path.extname(prop.$ref)
       )
     )
-    return converter(objectName) || objectName
+    return converter(objectName)
   },
 
+  /**
+   * @private
+   */
   _converterObjectName: function () {
     return (objectName) => {
       return this.converter[objectName] || objectName
     }
   },
 
+  /**
+   * @private
+   */
+  _shouldObjectBeImported: function () {
+    return (objectName) => {
+      return !_.contains(['string', 'number', 'Object'], objectName)
+    }
+  },
+
+  /**
+   * @private
+   */
+  _getArrayType: function (jsonSchemaProperties, getObjectName, converter) {
+    var typeArray = jsonSchemaProperties.type === 'array' ? {} : null
+
+    var objectName = getObjectName(jsonSchemaProperties, typeArray, converter)
+    return typeArray && _.extend({}, {
+      objectName: objectName,
+      type: function () {
+        return `Array<${this.objectName}>`
+      }
+    })
+  },
+
+  /**
+   * @private
+   */
+  _changeObjectNameToPropertyName: function (attributes, array, propertyName) {
+    var newObjectName = _.capitalize(pluralize.singular(propertyName))
+    attributes.isObject = true
+    attributes.isArray && (array.objectName = newObjectName)
+    attributes.type = array ? array.type() : newObjectName
+    attributes.objectName = newObjectName
+    attributes.shouldBeImported = function () {
+      return true
+    }
+  },
+
+  /**
+   * @private
+   */
+  _createObjectFileRecursively:
+    function (parentProperties, parentPropertyName, attributes, array) {
+      this._changeObjectNameToPropertyName(
+        attributes,
+        array,
+        parentPropertyName)
+
+      this._writeFile(
+        parentProperties.items || parentProperties,
+        attributes.objectName)
+    },
+
+  /**
+   * @private
+   */
   _getTemplateAttributes: function (jsonSchema) {
     var getObjectName = this._getObjectName
     var converter = this._converterObjectName()
+    var shouldBeImported = this._shouldObjectBeImported()
 
-    return _.map(jsonSchema.properties, (property, propertyName) => {
-      var array = property.type === 'array' && {
-        objectName: getObjectName(property, true, converter),
-        type: () => {
-          return `Array<${objectName}>`
-        }
-      }
-      var objectName = array ? array.objectName : getObjectName(property, false, converter)
-
-      return {
+    return _.map(jsonSchema.properties, (properties, propertyName) => {
+      var array = this._getArrayType(properties, getObjectName, converter)
+      var objectName = getObjectName(properties, array, converter)
+      var attributes = {
         name: _.camelCase(propertyName),
         isArray: !!array,
         objectName: objectName,
         type: array ? array.type() : objectName,
         shouldBeImported: function () {
-          return !!this.isArray && !_.contains(['string', 'number', 'Object'], this.objectName)
+          return !!this.isArray && shouldBeImported(this.objectName)
         }
       }
+
+      if (this.options.cascade && attributes.objectName === 'Object') {
+        this._createObjectFileRecursively(
+          properties,
+          propertyName,
+          attributes,
+          array)
+      }
+      return attributes
     })
   },
 
@@ -114,9 +181,27 @@ module.exports = yeomanGenerator.Base.extend({
    * @see mem-fs documentation https://github.com/sboudrias/mem-fs
    * @see mem-fs-edito documentation https://github.com/sboudrias/mem-fs-editor
    * @see Template format http://ejs.co/
+   * @private
+   */
+  _writeFile: function (jsonSchema, filename) {
+    this.fs.copyTpl(
+      this.templatePath('../../app/templates/class.js'),
+      this.destinationPath(`${filename}.js`),
+      {
+        classname: filename,
+        attributes: this._getTemplateAttributes(jsonSchema),
+        lodash: _
+      }
+    )
+  },
+
+  /**
+   * This read the json-schema passed in the `filepath` argument then writes the
+   * JS class file
+   *
    * @public
    */
-  writeFile: function () {
+  readJsonSchemaAndWriteJSFile: function () {
     var done = this.async()
     fs.readFile(this.filepath, 'utf8', (err, data) => {
       if (err) throw err
@@ -125,14 +210,7 @@ module.exports = yeomanGenerator.Base.extend({
       var ext = path.extname(this.filepath)
       var filename = _.capitalize(path.basename(this.filepath, ext))
 
-      this.fs.copyTpl(
-        this.templatePath('../../app/templates/class.js'),
-        this.destinationPath(`${filename}.js`),
-        {
-          classname: filename,
-          attributes: this._getTemplateAttributes(jsonSchema)
-        }
-      )
+      this._writeFile(jsonSchema, filename)
 
       done()
     })

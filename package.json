@@ -19,7 +19,8 @@
   "dependencies": {
     "fs-extra": "^0.24.0",
     "lodash": "^3.10.1",
-    "yeoman-generator": "^0.20.3"
+    "yeoman-generator": "^0.20.3",
+    "pluralize": "~1.2.1"
   },
   "devDependencies": {
     "async": "~1.4.2",
@@ -37,7 +38,7 @@
   },
   "scripts": {
     "test": "npm run lint && nyc _mocha --opts .mocha.opts",
-    "lint": "standard && eslint **/*.js && jsinspect generators/**/*.js",
+    "lint": "standard && eslint * && jsinspect generators/**/*.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   }
 }
