@@ -276,7 +276,8 @@ module.exports = yeomanGenerator.Base.extend({
       this.destinationPath(`${this.classname}.js`),
       {
         classname: this.classname,
-        attributes: this.attrs
+        attributes: this.attrs,
+        lodash: _
       }
     )
   }

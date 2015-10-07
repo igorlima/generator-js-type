@@ -15,6 +15,16 @@ class <%= classname %> {
     <% }); %>
   }
 
+  <% attributes.forEach(function(attr) { %>
+  <%= lodash.camelCase( 'get_' + attr.name ) %>() : <%- attr.type %> {
+    return this.<%= attr.name %>;
+  }
+
+  <%= lodash.camelCase( 'set_' + attr.name ) %>( <%- attr.name %>:<%- attr.type %> ) : void {
+    this.<%= attr.name %> = <%= attr.name%>;
+  }
+  <% }); %>
+
 }
 
 export { <%= classname %> };

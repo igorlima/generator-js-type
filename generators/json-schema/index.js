@@ -189,7 +189,8 @@ module.exports = yeomanGenerator.Base.extend({
       this.destinationPath(`${filename}.js`),
       {
         classname: filename,
-        attributes: this._getTemplateAttributes(jsonSchema)
+        attributes: this._getTemplateAttributes(jsonSchema),
+        lodash: _
       }
     )
   },
