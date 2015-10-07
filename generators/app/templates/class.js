@@ -20,8 +20,9 @@ class <%= classname %> {
     return this.<%= attr.name %>;
   }
 
-  <%= lodash.camelCase( 'set_' + attr.name ) %>( <%- attr.name %>:<%- attr.type %> ) : void {
+  <%= lodash.camelCase( 'set_' + attr.name ) %>( <%- attr.name %>:<%- attr.type %> ) : <%= classname %> {
     this.<%= attr.name %> = <%= attr.name%>;
+    return this;
   }
   <% }); %>
 
