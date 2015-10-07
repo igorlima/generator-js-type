@@ -38,9 +38,6 @@
             "properties":{
               "PropertyName":{
                 "type":"string"
-              },
-              "Ascending":{
-                "type":"boolean"
               }
             }
           }

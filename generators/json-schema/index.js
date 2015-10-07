@@ -2,6 +2,7 @@ var yeomanGenerator = require('yeoman-generator')
 var _ = require('lodash')
 var fs = require('fs')
 var path = require('path')
+var pluralize = require('pluralize')
 
 /**
  * To override the yeoman generator constructor, pass a constructor function to
@@ -100,10 +101,39 @@ module.exports = yeomanGenerator.Base.extend({
     return typeArray && _.extend({}, {
       objectName: objectName,
       type: function () {
-        return `Array<${objectName}>`
+        return `Array<${this.objectName}>`
       }
     })
   },
+
+  /**
+   * @private
+   */
+  _changeObjectNameToPropertyName: function (attributes, array, propertyName) {
+    var newObjectName = _.capitalize(pluralize.singular(propertyName))
+    attributes.isObject = true
+    attributes.isArray && (array.objectName = newObjectName)
+    attributes.type = array ? array.type() : newObjectName
+    attributes.objectName = newObjectName
+    attributes.shouldBeImported = function () {
+      return true
+    }
+  },
+
+  /**
+   * @private
+   */
+  _createObjectFileRecursively:
+    function (parentProperties, parentPropertyName, attributes, array) {
+      this._changeObjectNameToPropertyName(
+        attributes,
+        array,
+        parentPropertyName)
+
+      this._writeFile(
+        parentProperties.items || parentProperties,
+        attributes.objectName)
+    },
 
   /**
    * @private
@@ -116,14 +146,7 @@ module.exports = yeomanGenerator.Base.extend({
     return _.map(jsonSchema.properties, (properties, propertyName) => {
       var array = this._getArrayType(properties, getObjectName, converter)
       var objectName = getObjectName(properties, array, converter)
-
-      // setTimeout(() => {
-      //   var triggerCallback = this.objectName === 'object' &&
-      //     shouldBeImported(this.objectName)
-      //   triggerCallback && cascadeCallback && cascadeCallback(properties)
-      // })
-
-      return {
+      var attributes = {
         name: _.camelCase(propertyName),
         isArray: !!array,
         objectName: objectName,
@@ -132,6 +155,15 @@ module.exports = yeomanGenerator.Base.extend({
           return !!this.isArray && shouldBeImported(this.objectName)
         }
       }
+
+      if (this.options.cascade && attributes.objectName === 'Object') {
+        this._createObjectFileRecursively(
+          properties,
+          propertyName,
+          attributes,
+          array)
+      }
+      return attributes
     })
   },
 
