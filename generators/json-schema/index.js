@@ -184,8 +184,11 @@ module.exports = yeomanGenerator.Base.extend({
    * @private
    */
   _writeFile: function (jsonSchema, filename) {
+    var templatePath = `../../app/templates/${
+      this.options.template || 'class'}.js`
+
     this.fs.copyTpl(
-      this.templatePath('../../app/templates/class.js'),
+      this.templatePath(templatePath),
       this.destinationPath(`${filename}.js`),
       {
         classname: filename,
