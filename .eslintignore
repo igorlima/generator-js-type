@@ -1,4 +1,4 @@
 README.md
-generators/app/templates/class.js
+generators/app/templates/*.js
 package.json
 test/tmp/*
