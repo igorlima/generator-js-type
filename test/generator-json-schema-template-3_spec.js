@@ -4,7 +4,7 @@ var helpers = require('yeoman-generator').test
 var assert = require('yeoman-generator').assert
 var runFlowType = require('./helpers').runFlowType
 
-describe('generator json schema with class template 2', function () {
+describe('generator json schema with class template 3', function () {
   describe('song json schema', function () {
     before(function (done) {
       helpers.run(path.join(__dirname, '../generators/json-schema'))
@@ -13,7 +13,7 @@ describe('generator json schema with class template 2', function () {
         })
         .withArguments(path.join(__dirname, 'json-schema/song.json'))
         .withOptions({
-          template: 'class2'
+          template: 'class3'
         })
         .on('end', done)
     })
