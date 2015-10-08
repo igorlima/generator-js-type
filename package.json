@@ -20,7 +20,8 @@
     "fs-extra": "^0.24.0",
     "lodash": "^3.10.1",
     "yeoman-generator": "^0.20.3",
-    "pluralize": "~1.2.1"
+    "pluralize": "~1.2.1",
+    "glob": "~5.0.15"
   },
   "devDependencies": {
     "async": "~1.4.2",

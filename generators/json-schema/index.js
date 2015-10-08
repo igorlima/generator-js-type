@@ -168,6 +168,20 @@ module.exports = yeomanGenerator.Base.extend({
   },
 
   /**
+   * This basically reomve the file extension from the file path
+   *
+   * @param {string} filepath The file path
+   * @return {string} The file path without extension
+   * @private
+   */
+  _getFileName: function (filepath) {
+    return path.join(
+        path.parse(filepath).dir,
+        path.basename(filepath, path.extname(filepath))
+      )
+  },
+
+  /**
    * Yeoman is very careful when it comes to overwriting users files.
    * Basically, every write happening on a pre-existing file will go through
    * a conflict resolution process. This process requires that the user validate

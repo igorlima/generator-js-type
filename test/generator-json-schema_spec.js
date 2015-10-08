@@ -8,7 +8,7 @@ var async = require('async')
 var runFlowType = require('./helpers').runFlowType
 var createClassFromJsonSchema = require('./helpers').createClassFromJsonSchema
 
-describe('generator json schema', function () {
+describe('generator json schema with class template 1', function () {
   describe('calling without filepath', function () {
     before(function () {
       this.generator_environment = yeoman.createEnv([], {})
