@@ -1,7 +1,4 @@
 /* @flow */
-<% attributes.filter( function(attr) { return attr.shouldBeImported() } ).forEach(function(attribute) { -%>
-import { <%= attribute.objectName %> } from "./<%= attribute.objectName %>";
-<% }) -%>
 
 class <%= classname %> {
 
