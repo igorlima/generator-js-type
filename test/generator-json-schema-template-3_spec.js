@@ -19,26 +19,26 @@ describe('generator json schema with class template 3', function () {
     })
 
     it('create a Song file', function () {
-      assert.file('Song.js')
+      assert.file('song.js')
     })
 
     it('have a class definition in the file', function () {
-      assert.fileContent('Song.js', 'class Song {')
+      assert.fileContent('song.js', 'class Song {')
     })
 
     it('have setProperties function', function () {
-      assert.fileContent('Song.js', 'setProperties(values:Object) : Song {')
+      assert.fileContent('song.js', 'setProperties(values:Object) : Song {')
     })
 
     it('have setProperty function', function () {
       assert.fileContent(
-        'Song.js',
+        'song.js',
         'setProperty(propertyName:string, value:any) : Song {')
     })
 
     it('need to be validated by FlowType', function (done) {
       runFlowType(this.generator_temporary_dir, function (code) {
-        assert.file(path.join(__dirname, 'tmp/Song.js'))
+        assert.file(path.join(__dirname, 'tmp/song.js'))
         assert.strictEqual(code, 0)
         done()
       })

@@ -13,21 +13,21 @@ describe('json-schema generator private methods', function () {
       })
   })
 
-  describe('_getFileName', function () {
+  describe('_getFilePath', function () {
     it(`transform 'product.js' to 'product'`, function () {
-      var filename = this.myYeomanGenerator._getFileName('product.js')
+      var filename = this.myYeomanGenerator._getFilePath('product.js')
       assert.equal(filename, 'product')
     })
 
     it(`'firstFolder/product.json' to 'firstFolder/product'`, function () {
       var filename =
-        this.myYeomanGenerator._getFileName('firstFolder/product.json')
+        this.myYeomanGenerator._getFilePath('firstFolder/product.json')
       assert.equal(filename, 'firstFolder/product')
     })
 
     it(`'first/second/category.json' to 'first/second/category'`, function () {
       var filename =
-        this.myYeomanGenerator._getFileName('first/second/category.json')
+        this.myYeomanGenerator._getFilePath('first/second/category.json')
       assert.equal(filename, 'first/second/category')
     })
   })

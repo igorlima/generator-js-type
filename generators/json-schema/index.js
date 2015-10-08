@@ -125,7 +125,7 @@ module.exports = yeomanGenerator.Base.extend({
    * @private
    */
   _createObjectFileRecursively:
-    function (parentProperties, parentPropertyName, attributes, array) {
+    function (parentProperties, parentPropertyName, attributes, array, folder) {
       this._changeObjectNameToPropertyName(
         attributes,
         array,
@@ -133,13 +133,14 @@ module.exports = yeomanGenerator.Base.extend({
 
       this._writeFile(
         parentProperties.items || parentProperties,
-        attributes.objectName)
+        folder,
+        this._getFileName(attributes.objectName))
     },
 
   /**
    * @private
    */
-  _getTemplateAttributes: function (jsonSchema) {
+  _getTemplateAttributes: function (jsonSchema, folder) {
     var getObjectName = this._getObjectName
     var converter = this._converterObjectName()
     var shouldBeImported = this._shouldObjectBeImported()
@@ -162,24 +163,42 @@ module.exports = yeomanGenerator.Base.extend({
           properties,
           propertyName,
           attributes,
-          array)
+          array,
+          folder)
       }
       return attributes
     })
   },
 
   /**
-   * This basically reomve the file extension from the file path
+   * This basically remove the file extension from the file path
    *
    * @param {string} filepath The file path
    * @return {string} The file path without extension
    * @private
    */
-  _getFileName: function (filepath) {
+  _getFilePath: function (filepath) {
     return path.join(
-        path.parse(filepath).dir,
-        path.basename(filepath, path.extname(filepath))
+        this._getFileFolder(filepath),
+        this._getFileName(filepath)
       )
+  },
+
+  _getFileFolder: function (filepath) {
+    return path.parse(filepath).dir
+  },
+
+  /**
+   * This basically remove the file extension from the file name
+   *
+   * @param {string} filepath The file path
+   * @return {string} The file name without extension
+   * @private
+   */
+  _getFileName: function (filepath) {
+    return _.camelCase(
+      path.basename(filepath, path.extname(filepath))
+    )
   },
 
   /**
@@ -198,7 +217,7 @@ module.exports = yeomanGenerator.Base.extend({
    * @see Template format http://ejs.co/
    * @private
    */
-  _writeFile: function (jsonSchema, filename) {
+  _writeFile: function (jsonSchema, folder, filename) {
     var templatePath = `../../app/templates/${
       this.options.template || 'class'}.js`
 
@@ -206,8 +225,8 @@ module.exports = yeomanGenerator.Base.extend({
       this.templatePath(templatePath),
       this.destinationPath(`${filename}.js`),
       {
-        classname: filename,
-        attributes: this._getTemplateAttributes(jsonSchema),
+        classname: _.capitalize(filename),
+        attributes: this._getTemplateAttributes(jsonSchema, folder),
         lodash: _
       }
     )
@@ -224,9 +243,9 @@ module.exports = yeomanGenerator.Base.extend({
     async.each(this.filepath, (file, callback) => {
       fs.readFile(file, 'utf8', (err, data) => {
         var jsonSchema = JSON.parse(data)
-        var ext = path.extname(file)
-        var filename = _.capitalize(path.basename(file, ext))
-        this._writeFile(jsonSchema, filename)
+        var folder = this._getFilePath(file)
+        var filename = this._getFileName(file)
+        this._writeFile(jsonSchema, folder, filename)
         callback(err)
       })
     }, function () {

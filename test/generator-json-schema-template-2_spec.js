@@ -19,20 +19,20 @@ describe('generator json schema with class template 2', function () {
     })
 
     it('create a Song file', function () {
-      assert.file('Song.js')
+      assert.file('song.js')
     })
 
     it('have a class definition in the file', function () {
-      assert.fileContent('Song.js', 'class Song {')
+      assert.fileContent('song.js', 'class Song {')
     })
 
     it('the constructor is empty', function () {
-      assert.fileContent('Song.js', 'constructor () {')
+      assert.fileContent('song.js', 'constructor () {')
     })
 
     it('need to be validated by FlowType', function (done) {
       runFlowType(this.generator_temporary_dir, function (code) {
-        assert.file(path.join(__dirname, 'tmp/Song.js'))
+        assert.file(path.join(__dirname, 'tmp/song.js'))
         assert.strictEqual(code, 0)
         done()
       })

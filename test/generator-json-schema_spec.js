@@ -310,11 +310,11 @@ describe('generator json schema with class template 1', function () {
     })
 
     it('Song file exists', function () {
-      assert.file('Song.js')
+      assert.file('song.js')
     })
 
     it('SongList file exists', function () {
-      assert.file('SongList.js')
+      assert.file('songList.js')
     })
   })
 })
