@@ -3,6 +3,7 @@ var _ = require('lodash')
 var fs = require('fs')
 var path = require('path')
 var pluralize = require('pluralize')
+var glob = require('glob')
 var async = require('async')
 
 /**
@@ -45,7 +46,7 @@ module.exports = yeomanGenerator.Base.extend({
     yeomanGenerator.Base.apply(this, arguments)
     // This makes `classname` a required argument.
     this.argument('filepath', {
-      type: Array,
+      type: String,
       required: true,
       desc: 'json-schema file path'
     })
@@ -243,16 +244,19 @@ module.exports = yeomanGenerator.Base.extend({
    */
   readJsonSchemaAndWriteJSFile: function () {
     var done = this.async()
-    async.each(this.filepath, (file, callback) => {
-      fs.readFile(file, 'utf8', (err, data) => {
-        var jsonSchema = JSON.parse(data)
-        var folder = this._getFileFolder(this.options.target || file)
-        var filename = this._getFileName(file)
-        this._writeFile(jsonSchema, folder, filename)
-        callback(err)
+
+    glob(this.filepath, (er, files) => {
+      async.each(files, (file, callback) => {
+        fs.readFile(file, 'utf8', (err, data) => {
+          var jsonSchema = JSON.parse(data)
+          var folder = this._getFileFolder(this.options.target || file)
+          var filename = this._getFileName(file)
+          this._writeFile(jsonSchema, folder, filename)
+          callback(err)
+        })
+      }, function () {
+        done()
       })
-    }, function () {
-      done()
     })
   }
 })

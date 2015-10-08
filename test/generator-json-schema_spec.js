@@ -299,10 +299,7 @@ describe('generator json schema with class template 1', function () {
         .inTmpDir((dir) => {
           this.generator_temporary_dir = dir
         })
-        .withArguments([
-          path.join(__dirname, 'json-schema/song.json'),
-          path.join(__dirname, 'json-schema/songList.json')
-        ])
+        .withArguments(path.join(__dirname, 'json-schema') + '/song*.json')
         .withOptions({
           convert: 'integer:number'
         })
