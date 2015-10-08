@@ -292,4 +292,29 @@ describe('generator json schema with class template 1', function () {
       })
     })
   })
+
+  describe('match files patterns', function () {
+    before(function (done) {
+      helpers.run(path.join(__dirname, '../generators/json-schema'))
+        .inTmpDir((dir) => {
+          this.generator_temporary_dir = dir
+        })
+        .withArguments([
+          path.join(__dirname, 'json-schema/song.json'),
+          path.join(__dirname, 'json-schema/songList.json')
+        ])
+        .withOptions({
+          convert: 'integer:number'
+        })
+        .on('end', done)
+    })
+
+    it('Song file exists', function () {
+      assert.file('Song.js')
+    })
+
+    it('SongList file exists', function () {
+      assert.file('SongList.js')
+    })
+  })
 })

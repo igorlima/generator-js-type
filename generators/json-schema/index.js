@@ -3,7 +3,6 @@ var _ = require('lodash')
 var fs = require('fs')
 var path = require('path')
 var pluralize = require('pluralize')
-var glob = require('glob')
 var async = require('async')
 
 /**
@@ -46,12 +45,12 @@ module.exports = yeomanGenerator.Base.extend({
     yeomanGenerator.Base.apply(this, arguments)
     // This makes `classname` a required argument.
     this.argument('filepath', {
-      type: String,
+      type: Array,
       required: true,
       desc: 'json-schema file path'
     })
     // And then access it later on this way; e.g. CamelCased
-    this.filepath = _.camelCase(this.filepath)
+    // this.filepath = _.camelCase(this.filepath)
     // Next, add your custom code
     this.option('coffee') // This method adds support for a `--coffee` flag
     this._createObjectTypeConverter()
@@ -222,18 +221,16 @@ module.exports = yeomanGenerator.Base.extend({
    */
   readJsonSchemaAndWriteJSFile: function () {
     var done = this.async()
-    glob(this.filepath, (er, files) => {
-      async.each(files, (file, callback) => {
-        fs.readFile(this.filepath, 'utf8', (err, data) => {
-          var jsonSchema = JSON.parse(data)
-          var ext = path.extname(this.filepath)
-          var filename = _.capitalize(path.basename(this.filepath, ext))
-          this._writeFile(jsonSchema, filename)
-          callback(err)
-        })
-      }, function () {
-        done()
+    async.each(this.filepath, (file, callback) => {
+      fs.readFile(file, 'utf8', (err, data) => {
+        var jsonSchema = JSON.parse(data)
+        var ext = path.extname(file)
+        var filename = _.capitalize(path.basename(file, ext))
+        this._writeFile(jsonSchema, filename)
+        callback(err)
       })
+    }, function () {
+      done()
     })
   }
 })
