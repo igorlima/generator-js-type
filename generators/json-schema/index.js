@@ -3,6 +3,8 @@ var _ = require('lodash')
 var fs = require('fs')
 var path = require('path')
 var pluralize = require('pluralize')
+var glob = require('glob')
+var async = require('async')
 
 /**
  * To override the yeoman generator constructor, pass a constructor function to
@@ -220,17 +222,18 @@ module.exports = yeomanGenerator.Base.extend({
    */
   readJsonSchemaAndWriteJSFile: function () {
     var done = this.async()
-    fs.readFile(this.filepath, 'utf8', (err, data) => {
-      if (err) throw err
-
-      var jsonSchema = JSON.parse(data)
-      var ext = path.extname(this.filepath)
-      var filename = _.capitalize(path.basename(this.filepath, ext))
-
-      this._writeFile(jsonSchema, filename)
-
-      done()
+    glob(this.filepath, (er, files) => {
+      async.each(files, (file, callback) => {
+        fs.readFile(this.filepath, 'utf8', (err, data) => {
+          var jsonSchema = JSON.parse(data)
+          var ext = path.extname(this.filepath)
+          var filename = _.capitalize(path.basename(this.filepath, ext))
+          this._writeFile(jsonSchema, filename)
+          callback(err)
+        })
+      }, function () {
+        done()
+      })
     })
   }
-
 })
