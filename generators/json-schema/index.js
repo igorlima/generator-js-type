@@ -221,9 +221,11 @@ module.exports = yeomanGenerator.Base.extend({
   _writeFile: function (jsonSchema, folder, filename) {
     var templatePath = `../../app/templates/${
       this.options.template || 'class'}.js`
-    var destinationPath = this.options.target
-      ? path.join(folder, filename)
-      : filename
+    var destinationPath = this.destinationPath(
+      path.join(folder, filename))
+    // var destinationPath = this.options.target
+    //   ? path.join(folder, filename)
+    //   : filename
 
     this.fs.copyTpl(
       this.templatePath(templatePath),
@@ -245,11 +247,14 @@ module.exports = yeomanGenerator.Base.extend({
   readJsonSchemaAndWriteJSFile: function () {
     var done = this.async()
 
-    glob(this.filepath, (er, files) => {
+    glob(this.filepath, {nosort: true}, (er, files) => {
+      var relativePathFrom = this._getFileFolder(files[0])
+
       async.each(files, (file, callback) => {
         fs.readFile(file, 'utf8', (err, data) => {
           var jsonSchema = JSON.parse(data)
-          var folder = this._getFileFolder(this.options.target || file)
+          var folder = path.relative(
+            relativePathFrom, this._getFileFolder(file))
           var filename = this._getFileName(file)
           this._writeFile(jsonSchema, folder, filename)
           callback(err)
