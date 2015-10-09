@@ -170,7 +170,7 @@ describe('generator app', function () {
     })
 
     it('import all classes', function () {
-      assert.fileContent('Song.js', 'import { Track } from "./track"')
+      assert.fileContent('song.js', 'import { Track } from "./track"')
     })
 
     it('need to be validated by FlowType', function (done) {
