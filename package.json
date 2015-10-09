@@ -34,7 +34,8 @@
   },
   "standard": {
     "ignore": [
-      "generators/app/templates/**/*.js"
+      "generators/app/templates/**/*.js",
+      "test/tmp/**/*.js"
     ]
   },
   "scripts": {

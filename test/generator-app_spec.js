@@ -88,7 +88,7 @@ describe('generator app', function () {
 
     it('need to be validated via FlowType', function (done) {
       runFlowType(this.generator_temporary_dir, function (code) {
-        assert.file(path.join(__dirname, 'tmp/test-class.js'))
+        assert.file(path.join(__dirname, 'tmp/test-a/test-class.js'))
         assert.strictEqual(code, 0)
         done()
       })
@@ -131,7 +131,7 @@ describe('generator app', function () {
 
     it('need to be validated by FlowType', function (done) {
       runFlowType(this.generator_temporary_dir, function (code) {
-        assert.file(path.join(__dirname, 'tmp/song.js'))
+        assert.file(path.join(__dirname, 'tmp/test-a/song.js'))
         assert.strictEqual(code, 0)
         done()
       })
@@ -175,9 +175,9 @@ describe('generator app', function () {
 
     it('need to be validated by FlowType', function (done) {
       runFlowType(this.generator_temporary_dirs, function (code) {
-        assert.file(path.join(__dirname, 'tmp/track.js'))
-        assert.file(path.join(__dirname, 'tmp/artirst.js'))
-        assert.file(path.join(__dirname, 'tmp/song.js'))
+        assert.file(path.join(__dirname, 'tmp/test-a/track.js'))
+        assert.file(path.join(__dirname, 'tmp/test-a/artirst.js'))
+        assert.file(path.join(__dirname, 'tmp/test-a/song.js'))
         assert.strictEqual(code, 0)
         done()
       })

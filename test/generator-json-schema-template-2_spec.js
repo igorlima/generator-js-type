@@ -32,7 +32,7 @@ describe('generator json schema with class template 2', function () {
 
     it('need to be validated by FlowType', function (done) {
       runFlowType(this.generator_temporary_dir, function (code) {
-        assert.file(path.join(__dirname, 'tmp/song.js'))
+        assert.file(path.join(__dirname, 'tmp/test-a/song.js'))
         assert.strictEqual(code, 0)
         done()
       })

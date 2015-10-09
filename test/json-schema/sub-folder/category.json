@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "CategoryId": {
+    "id": "CategoryId",
+    "type": "integer"
+    },
+    "Id": {
+      "id": "Id",
+      "type": "integer"
+    },
+    "CategorySetId": {
+      "id": "CategorySetId",
+      "type": "integer"
+    },
+    "IsFeatured": {
+      "id": "IsFeatured",
+      "type": "boolean"
+    },
+    "Name": {
+      "id": "Name",
+      "type": "string"
+    },
+    "ParentId": {
+      "id": "ParentId",
+      "type": "integer"
+    },
+    "Level": {
+      "id": "Level",
+      "type": "integer"
+    }
+  }
+}

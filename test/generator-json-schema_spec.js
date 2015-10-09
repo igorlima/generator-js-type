@@ -6,6 +6,8 @@ var assert = require('yeoman-generator').assert
 var yeoman = require('yeoman-environment')
 var async = require('async')
 var runFlowType = require('./helpers').runFlowType
+var runFlowTypeIn = require('./helpers').runFlowTypeIn
+var removeFilesSync = require('./helpers').removeFilesSync
 var createClassFromJsonSchema = require('./helpers').createClassFromJsonSchema
 
 describe('generator json schema with class template 1', function () {
@@ -67,7 +69,7 @@ describe('generator json schema with class template 1', function () {
 
     it('need to be validated by FlowType', function (done) {
       runFlowType(this.generator_temporary_dir, function (code) {
-        assert.file(path.join(__dirname, 'tmp/song.js'))
+        assert.file(path.join(__dirname, 'tmp/test-a/song.js'))
         assert.strictEqual(code, 0)
         done()
       })
@@ -112,8 +114,8 @@ describe('generator json schema with class template 1', function () {
 
     it('need to be validated by FlowType', function (done) {
       runFlowType(this.generator_temporary_dirs, function (code) {
-        assert.file(path.join(__dirname, 'tmp/song.js'))
-        assert.file(path.join(__dirname, 'tmp/song-list.js'))
+        assert.file(path.join(__dirname, 'tmp/test-a/song.js'))
+        assert.file(path.join(__dirname, 'tmp/test-a/song-list.js'))
         assert.strictEqual(code, 0)
         done()
       })
@@ -151,7 +153,7 @@ describe('generator json schema with class template 1', function () {
 
     it('need to be validated by FlowType', function (done) {
       runFlowType(this.generator_temporary_dir, function (code) {
-        assert.file(path.join(__dirname, 'tmp/product.js'))
+        assert.file(path.join(__dirname, 'tmp/test-a/product.js'))
         assert.strictEqual(code, 0)
         done()
       })
@@ -186,7 +188,7 @@ describe('generator json schema with class template 1', function () {
 
       it('need to be validated by FlowType', function (done) {
         runFlowType(this.generator_temporary_dir, function (code) {
-          assert.file(path.join(__dirname, 'tmp/search-filter.js'))
+          assert.file(path.join(__dirname, 'tmp/test-a/search-filter.js'))
           assert.strictEqual(code, 0)
           done()
         })
@@ -285,7 +287,7 @@ describe('generator json schema with class template 1', function () {
 
       it('need to be validated by FlowType', function (done) {
         runFlowType(this.generator_temporary_dir, function (code) {
-          assert.file(path.join(__dirname, 'tmp/search-filter.js'))
+          assert.file(path.join(__dirname, 'tmp/test-a/search-filter.js'))
           assert.strictEqual(code, 0)
           done()
         })
@@ -312,6 +314,50 @@ describe('generator json schema with class template 1', function () {
 
     it('SongList file exists', function () {
       assert.file('song-list.js')
+    })
+  })
+
+  describe('target another destination path', function () {
+    before(function (done) {
+      removeFilesSync(path.join(__dirname, 'tmp/test-b', '**/*.js'))
+      helpers.run(path.join(__dirname, '../generators/json-schema'))
+        .inTmpDir((dir) => {
+          this.generator_temporary_dir = dir
+        })
+        .withArguments(path.join(__dirname, 'json-schema') + '/**/*.json')
+        .withOptions({
+          convert: ['integer:number', 'object:Object'],
+          target: path.join(__dirname, 'tmp/test-b')
+        })
+        .on('end', done)
+    })
+
+    it('Song file exists in tmp/test-b folder', function () {
+      assert.file(path.join(__dirname, 'tmp/test-b', 'song.js'))
+    })
+
+    it('SongList file exists in tmp/test-b folder', function () {
+      assert.file(path.join(__dirname, 'tmp/test-b', 'song-list.js'))
+    })
+
+    it('SearchFilter file exists in tmp/test-b folder', function () {
+      assert.file(path.join(__dirname, 'tmp/test-b', 'search-filter.js'))
+    })
+
+    it('Product file exists in tmp/test-b folder', function () {
+      assert.file(path.join(__dirname, 'tmp/test-b', 'product.js'))
+    })
+
+    it('Category file exist in tmp/test-b/sub-folder folder', function () {
+      assert.file(path.join(__dirname, 'tmp/test-b/sub-folder', 'category.js'))
+    })
+
+    it('need to be validated by FlowType', function (done) {
+      runFlowTypeIn('tmp/test-b',
+        function (code) {
+          assert.strictEqual(code, 0)
+          done()
+        })
     })
   })
 })
