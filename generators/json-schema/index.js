@@ -256,7 +256,10 @@ module.exports = yeomanGenerator.Base.extend({
           var folder = path.relative(
             relativePathFrom, this._getFileFolder(file))
           var filename = this._getFileName(file)
-          this._writeFile(jsonSchema, folder, filename)
+          this._writeFile(
+            jsonSchema,
+            path.join(this.options.target || '', folder),
+            filename)
           callback(err)
         })
       }, function () {

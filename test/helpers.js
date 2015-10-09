@@ -4,23 +4,29 @@ var spawn = require('child_process').spawn
 var fs = require('fs-extra')
 var helpers = require('yeoman-generator').test
 
-exports.runFlowType = function (temporary_dir, callback) {
-  var flow = spawn('flow', [ 'check', __dirname + '/tmp' ])
-  var temporary_dirs = typeof temporary_dir === 'string'
-    ? [temporary_dir]
-    : temporary_dir
+exports.runFlowType = function (filesToCheck, callback) {
+  exports.cleanFolderAndCopyFiles(filesToCheck, 'tmp/test-a')
+  exports.runFlowTypeIn('tmp/test-a', callback)
+}
 
-  fs.removeSync(path.join(__dirname, 'tmp/*.js'))
+exports.cleanFolderAndCopyFiles = function (from, to) {
+  var temporary_dirs = typeof from === 'string'
+    ? [from]
+    : from
+
+  fs.removeSync(path.join(__dirname, to, '*.js'))
   temporary_dirs.forEach(function (dir) {
-    fs.copySync(dir, path.join(__dirname, 'tmp'))
+    fs.copySync(dir, path.join(__dirname, to))
   })
+}
 
+exports.runFlowTypeIn = function (targetFolder, callback) {
+  var flow = spawn('flow', [ 'check', path.join(__dirname, targetFolder) ])
   // https://nodejs.org/api/child_process.html
   flow.stderr.on('data', function (data) {
     // Log error in CI environment if needed
     console.warn('' + data) // eslint-disable-line no-console
   })
-
   flow.on('close', function (code) {
     callback(code)
   })
@@ -44,3 +50,8 @@ exports.createClassFromJsonSchema = function (jsonSchemaPath, dirs, callback) {
     .withArguments(path.join(__dirname, jsonSchemaPath))
     .on('end', callback)
 }
+
+exports.removeFilesSync = function (path) {
+  fs.removeSync(path)
+}
+
