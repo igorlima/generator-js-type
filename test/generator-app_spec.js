@@ -75,20 +75,20 @@ describe('generator app', function () {
     })
 
     it('create a js file', function () {
-      assert.file(['TestClass.js'])
+      assert.file(['test-class.js'])
     })
 
     it('have a class definition in the file', function () {
-      assert.fileContent('TestClass.js', 'class TestClass {')
+      assert.fileContent('test-class.js', 'class TestClass {')
     })
 
     it('have a constructor definition in the class', function () {
-      assert.fileContent('TestClass.js', /constructor[(][\s]*[)] {/)
+      assert.fileContent('test-class.js', /constructor[(][\s]*[)] {/)
     })
 
     it('need to be validated via FlowType', function (done) {
       runFlowType(this.generator_temporary_dir, function (code) {
-        assert.file(path.join(__dirname, 'tmp/TestClass.js'))
+        assert.file(path.join(__dirname, 'tmp/test-class.js'))
         assert.strictEqual(code, 0)
         done()
       })
@@ -115,23 +115,23 @@ describe('generator app', function () {
     })
 
     it('have a string variable declared', function () {
-      assert.fileContent('Song.js', 'title: string;')
+      assert.fileContent('song.js', 'title: string;')
     })
 
     it('have a number variable declared', function () {
-      assert.fileContent('Song.js', 'price: number;')
+      assert.fileContent('song.js', 'price: number;')
     })
 
     it('have both string and number arguments in the constructor', function () {
       assert.fileContent(
-        'Song.js',
+        'song.js',
         /constructor[(] title:string, price:number [)] {/
       )
     })
 
     it('need to be validated by FlowType', function (done) {
       runFlowType(this.generator_temporary_dir, function (code) {
-        assert.file(path.join(__dirname, 'tmp/Song.js'))
+        assert.file(path.join(__dirname, 'tmp/song.js'))
         assert.strictEqual(code, 0)
         done()
       })
@@ -170,14 +170,14 @@ describe('generator app', function () {
     })
 
     it('import all classes', function () {
-      assert.fileContent('Song.js', 'import { Track } from "./Track"')
+      assert.fileContent('Song.js', 'import { Track } from "./track"')
     })
 
     it('need to be validated by FlowType', function (done) {
       runFlowType(this.generator_temporary_dirs, function (code) {
-        assert.file(path.join(__dirname, 'tmp/Track.js'))
-        assert.file(path.join(__dirname, 'tmp/Artirst.js'))
-        assert.file(path.join(__dirname, 'tmp/Song.js'))
+        assert.file(path.join(__dirname, 'tmp/track.js'))
+        assert.file(path.join(__dirname, 'tmp/artirst.js'))
+        assert.file(path.join(__dirname, 'tmp/song.js'))
         assert.strictEqual(code, 0)
         done()
       })

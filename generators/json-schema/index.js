@@ -222,7 +222,7 @@ module.exports = yeomanGenerator.Base.extend({
     var templatePath = `../../app/templates/${
       this.options.template || 'class'}.js`
     var destinationPath = this.destinationPath(
-      path.join(folder, filename))
+      path.join(folder, _.kebabCase(filename)))
     // var destinationPath = this.options.target
     //   ? path.join(folder, filename)
     //   : filename

@@ -96,16 +96,16 @@ describe('generator json schema with class template 1', function () {
     })
 
     it('import Song class', function () {
-      assert.fileContent('songList.js', 'import { Song } from "./Song"')
+      assert.fileContent('song-list.js', 'import { Song } from "./song"')
     })
 
     it('have song list variable declared', function () {
-      assert.fileContent('songList.js', 'songs: Array<Song>;')
+      assert.fileContent('song-list.js', 'songs: Array<Song>;')
     })
 
     it('have sont list arguments in the constructor', function () {
       assert.fileContent(
-        'songList.js',
+        'song-list.js',
         /constructor[(] songs:Array<Song> [)] {/
       )
     })
@@ -113,7 +113,7 @@ describe('generator json schema with class template 1', function () {
     it('need to be validated by FlowType', function (done) {
       runFlowType(this.generator_temporary_dirs, function (code) {
         assert.file(path.join(__dirname, 'tmp/song.js'))
-        assert.file(path.join(__dirname, 'tmp/songList.js'))
+        assert.file(path.join(__dirname, 'tmp/song-list.js'))
         assert.strictEqual(code, 0)
         done()
       })
@@ -173,20 +173,20 @@ describe('generator json schema with class template 1', function () {
       })
 
       it('should NOT import any class', function () {
-        assert.noFileContent('searchFilter.js', 'import')
+        assert.noFileContent('search-filter.js', 'import')
       })
 
       it('filters is an array of objects', function () {
-        assert.fileContent('searchFilter.js', 'filters: Array<Object>;')
+        assert.fileContent('search-filter.js', 'filters: Array<Object>;')
       })
 
       it('sortingTemplate is an object', function () {
-        assert.fileContent('searchFilter.js', 'sortingTemplate: Object;')
+        assert.fileContent('search-filter.js', 'sortingTemplate: Object;')
       })
 
       it('need to be validated by FlowType', function (done) {
         runFlowType(this.generator_temporary_dir, function (code) {
-          assert.file(path.join(__dirname, 'tmp/searchFilter.js'))
+          assert.file(path.join(__dirname, 'tmp/search-filter.js'))
           assert.strictEqual(code, 0)
           done()
         })
@@ -209,46 +209,46 @@ describe('generator json schema with class template 1', function () {
 
       describe('SearchFilter file', function () {
         it('file exists', function () {
-          assert.file('searchFilter.js')
+          assert.file('search-filter.js')
         })
 
         it('import Filter class', function () {
           assert.fileContent(
-            'searchFilter.js',
-            'import { Filter } from "./Filter"')
+            'search-filter.js',
+            'import { Filter } from "./filter"')
         })
 
         it('filters is an array of filter', function () {
-          assert.fileContent('searchFilter.js', 'filters: Array<Filter>;')
+          assert.fileContent('search-filter.js', 'filters: Array<Filter>;')
         })
 
         it('import SortingTemplate class', function () {
           assert.fileContent(
-            'searchFilter.js',
-            'import { SortingTemplate } from "./SortingTemplate";')
+            'search-filter.js',
+            'import { SortingTemplate } from "./sorting-template";')
         })
 
         it('sortingTemplate is SortingTemplate object', function () {
           assert.fileContent(
-            'searchFilter.js',
+            'search-filter.js',
             'sortingTemplate: SortingTemplate;')
         })
       })
 
       describe('SortingTemplate file', function () {
         it('file exists', function () {
-          assert.file('sortingTemplate.js')
+          assert.file('sorting-template.js')
         })
 
         it('import SortingFilter class', function () {
           assert.fileContent(
-            'sortingTemplate.js',
-            'import { SortingFilter } from "./SortingFilter";')
+            'sorting-template.js',
+            'import { SortingFilter } from "./sorting-filter";')
         })
 
         it('sortingFilters is an array of SortingFilter', function () {
           assert.fileContent(
-            'sortingTemplate.js',
+            'sorting-template.js',
             'sortingFilters: Array<SortingFilter>;')
         })
       })
@@ -273,19 +273,19 @@ describe('generator json schema with class template 1', function () {
 
       describe('SortingFilter file', function () {
         it('file exists', function () {
-          assert.file('sortingFilter.js')
+          assert.file('sorting-filter.js')
         })
 
         it('propertyName is a string', function () {
           assert.fileContent(
-            'sortingFilter.js',
+            'sorting-filter.js',
             'propertyName: string;')
         })
       })
 
       it('need to be validated by FlowType', function (done) {
         runFlowType(this.generator_temporary_dir, function (code) {
-          assert.file(path.join(__dirname, 'tmp/searchFilter.js'))
+          assert.file(path.join(__dirname, 'tmp/search-filter.js'))
           assert.strictEqual(code, 0)
           done()
         })
@@ -311,7 +311,7 @@ describe('generator json schema with class template 1', function () {
     })
 
     it('SongList file exists', function () {
-      assert.file('songList.js')
+      assert.file('song-list.js')
     })
   })
 })
