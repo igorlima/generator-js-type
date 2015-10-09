@@ -3,6 +3,8 @@ var _ = require('lodash')
 var fs = require('fs')
 var path = require('path')
 var pluralize = require('pluralize')
+var glob = require('glob')
+var async = require('async')
 
 /**
  * To override the yeoman generator constructor, pass a constructor function to
@@ -49,7 +51,7 @@ module.exports = yeomanGenerator.Base.extend({
       desc: 'json-schema file path'
     })
     // And then access it later on this way; e.g. CamelCased
-    this.filepath = _.camelCase(this.filepath)
+    // this.filepath = _.camelCase(this.filepath)
     // Next, add your custom code
     this.option('coffee') // This method adds support for a `--coffee` flag
     this._createObjectTypeConverter()
@@ -124,7 +126,7 @@ module.exports = yeomanGenerator.Base.extend({
    * @private
    */
   _createObjectFileRecursively:
-    function (parentProperties, parentPropertyName, attributes, array) {
+    function (parentProperties, parentPropertyName, attributes, array, folder) {
       this._changeObjectNameToPropertyName(
         attributes,
         array,
@@ -132,13 +134,14 @@ module.exports = yeomanGenerator.Base.extend({
 
       this._writeFile(
         parentProperties.items || parentProperties,
-        attributes.objectName)
+        folder,
+        this._getFileName(attributes.objectName))
     },
 
   /**
    * @private
    */
-  _getTemplateAttributes: function (jsonSchema) {
+  _getTemplateAttributes: function (jsonSchema, folder) {
     var getObjectName = this._getObjectName
     var converter = this._converterObjectName()
     var shouldBeImported = this._shouldObjectBeImported()
@@ -161,10 +164,42 @@ module.exports = yeomanGenerator.Base.extend({
           properties,
           propertyName,
           attributes,
-          array)
+          array,
+          folder)
       }
       return attributes
     })
+  },
+
+  /**
+   * This basically remove the file extension from the file path
+   *
+   * @param {string} filepath The file path
+   * @return {string} The file path without extension
+   * @private
+   */
+  _getFilePath: function (filepath) {
+    return path.join(
+        this._getFileFolder(filepath),
+        this._getFileName(filepath)
+      )
+  },
+
+  _getFileFolder: function (filepath) {
+    return path.parse(filepath).dir
+  },
+
+  /**
+   * This basically remove the file extension from the file name
+   *
+   * @param {string} filepath The file path
+   * @return {string} The file name without extension
+   * @private
+   */
+  _getFileName: function (filepath) {
+    return _.camelCase(
+      path.basename(filepath, path.extname(filepath))
+    )
   },
 
   /**
@@ -183,13 +218,21 @@ module.exports = yeomanGenerator.Base.extend({
    * @see Template format http://ejs.co/
    * @private
    */
-  _writeFile: function (jsonSchema, filename) {
+  _writeFile: function (jsonSchema, folder, filename) {
+    var templatePath = `../../app/templates/${
+      this.options.template || 'class'}.js`
+    var destinationPath = this.destinationPath(
+      path.join(folder, _.kebabCase(filename)))
+    // var destinationPath = this.options.target
+    //   ? path.join(folder, filename)
+    //   : filename
+
     this.fs.copyTpl(
-      this.templatePath('../../app/templates/class.js'),
-      this.destinationPath(`${filename}.js`),
+      this.templatePath(templatePath),
+      this.destinationPath(`${destinationPath}.js`),
       {
-        classname: filename,
-        attributes: this._getTemplateAttributes(jsonSchema),
+        classname: _.capitalize(filename),
+        attributes: this._getTemplateAttributes(jsonSchema, folder),
         lodash: _
       }
     )
@@ -203,17 +246,22 @@ module.exports = yeomanGenerator.Base.extend({
    */
   readJsonSchemaAndWriteJSFile: function () {
     var done = this.async()
-    fs.readFile(this.filepath, 'utf8', (err, data) => {
-      if (err) throw err
 
-      var jsonSchema = JSON.parse(data)
-      var ext = path.extname(this.filepath)
-      var filename = _.capitalize(path.basename(this.filepath, ext))
+    glob(this.filepath, {nosort: true}, (er, files) => {
+      var relativePathFrom = this._getFileFolder(files[0])
 
-      this._writeFile(jsonSchema, filename)
-
-      done()
+      async.each(files, (file, callback) => {
+        fs.readFile(file, 'utf8', (err, data) => {
+          var jsonSchema = JSON.parse(data)
+          var folder = path.relative(
+            relativePathFrom, this._getFileFolder(file))
+          var filename = this._getFileName(file)
+          this._writeFile(jsonSchema, folder, filename)
+          callback(err)
+        })
+      }, function () {
+        done()
+      })
     })
   }
-
 })

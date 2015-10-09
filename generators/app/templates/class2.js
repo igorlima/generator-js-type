@@ -1,7 +1,4 @@
 /* @flow */
-<% attributes.filter( function(attr) { return attr.shouldBeImported() } ).forEach(function(attribute) { -%>
-import { <%= attribute.objectName %> } from "./<%= lodash.kebabCase(attribute.objectName) %>";
-<% }) -%>
 
 class <%= classname %> {
 
@@ -9,10 +6,8 @@ class <%= classname %> {
   <%= attribute.name %>: <%- attribute.type %>;
   <% }); %>
 
-  constructor( <%- attributes.map(function(attr) { return attr.name + ':' + attr.type }).join(', ') %> ) {
-    <% attributes.forEach(function(attribute) { %>
-    this.<%= attribute.name %> = <%= attribute.name%>;
-    <% }); %>
+  constructor () {
+
   }
 
   <% attributes.forEach(function(attr) { %>

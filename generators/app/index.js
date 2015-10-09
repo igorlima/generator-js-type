@@ -273,7 +273,7 @@ module.exports = yeomanGenerator.Base.extend({
      */
     this.fs.copyTpl(
       this.templatePath('class.js'),
-      this.destinationPath(`${this.classname}.js`),
+      this.destinationPath(`${_.kebabCase(this.classname)}.js`),
       {
         classname: this.classname,
         attributes: this.attrs,
